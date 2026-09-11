@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Smart Converter - Universal PDF Suite</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="bg-dark text-light d-flex flex-column min-vh-100">
+
+    <!-- Header Navigation -->
+    <header class="navbar navbar-expand-lg navbar-dark bg-dark border-bottom border-secondary sticky-top px-3 px-md-4 shadow">
+        <a class="navbar-brand d-flex align-items-center gap-2 fw-bold text-primary fs-4" href="#">
+            <i class="bi bi-file-earmark-pdf-fill fs-2"></i>
+            <span>Smart Converter</span>
+        </a>
+        <div class="ms-auto d-flex align-items-center gap-2 gap-md-3">
+            <input type="text" id="searchTools" class="form-control form-control-sm bg-secondary text-light border-0 search-bar" placeholder="Tool suchen...">
+            <button class="btn btn-outline-light btn-sm" id="toggleTheme" title="Design wechseln"><i class="bi bi-moon-stars"></i></button>
+        </div>
+    </header>
+
+    <!-- Main Workspace Container -->
+    <main class="container-fluid py-4 px-3 px-md-4 flex-grow-1">
+        
+        <!-- Interactive File Converter Modal/Zone -->
+        <div class="row mb-4 mb-md-5 justify-content-center">
+            <div class="col-12 col-lg-10">
+                <div class="card bg-secondary bg-opacity-25 border-secondary rounded-4 shadow-lg p-3 p-md-4 text-center dropzone-card" id="dropzoneCard">
+                    <div class="d-flex align-items-center justify-content-between mb-3">
+                        <span class="badge bg-primary fs-6 px-3 py-2" id="selectedToolBadge">Tool: Compress PDF</span>
+                        <button class="btn btn-sm btn-outline-secondary text-light" id="changeToolBtn" style="display:none;"><i class="bi bi-grid-3x3-gap"></i> Tool wechseln</button>
+                    </div>
+
+                    <!-- Dropzone -->
+                    <div class="dropzone p-4 p-md-5 border border-2 border-dashed border-primary rounded-4 bg-dark bg-opacity-50" id="dropzone">
+                        <i class="bi bi-cloud-arrow-up-fill text-primary display-3 mb-2 mb-md-3"></i>
+                        <h4 class="fw-bold mb-2 text-white fs-4 fs-md-3">Datei hierher ziehen oder auswählen</h4>
+                        <p class="text-secondary small mb-3">Unterstützt PDF, Word, Excel, PPT, Bilder (PNG/JPG/WEBP), OpenOffice, CSV, ZIP u.v.m.</p>
+                        <input type="file" id="fileInput" class="d-none" multiple>
+                        <button class="btn btn-primary btn-lg px-4 py-2 rounded-pill fw-semibold shadow-sm" onclick="document.getElementById('fileInput').click()">
+                            <i class="bi bi-folder2-open me-2"></i> Dateien auswählen
+                        </button>
+                    </div>
+
+                    <!-- Selected Files Preview List -->
+                    <div id="fileListContainer" class="mt-3 text-start d-none">
+                        <h6 class="fw-bold border-bottom border-secondary pb-2 mb-3 text-white"><i class="bi bi-paperclip me-2 text-primary"></i>Ausgewählte Dateien (<span id="fileCount">0</span>)</h6>
+                        <div id="fileList" class="d-flex flex-column gap-2 mb-3"></div>
+
+                        <!-- Tool Custom Parameters -->
+                        <div id="toolOptions" class="bg-dark bg-opacity-75 p-3 rounded-3 mb-3 d-none border border-secondary">
+                            <h6 class="fw-semibold text-warning mb-2"><i class="bi bi-sliders me-2"></i>Optionen</h6>
+                            
+                            <!-- Rotation option -->
+                            <div id="optionRotate" class="d-none align-items-center gap-3">
+                                <label class="form-label mb-0 text-light">Drehwinkel:</label>
+                                <select id="rotateAngle" class="form-select form-select-sm bg-secondary text-light border-0 w-auto">
+                                    <option value="90">90° im Uhrzeigersinn</option>
+                                    <option value="180">180° auf dem Kopf</option>
+                                    <option value="270">270° gegen Uhrzeigersinn</option>
+                                </select>
+                            </div>
+
+                            <!-- Page Numbers option -->
+                            <div id="optionPages" class="d-none">
+                                <label class="form-label mb-1 text-light">Seitenangabe (z.B. 1, 2, 5):</label>
+                                <input type="text" id="pageNumbers" class="form-control form-control-sm bg-secondary text-light border-0" placeholder="1, 2, 5">
+                            </div>
+
+                            <!-- Compression Option -->
+                            <div id="optionCompress" class="d-none align-items-center gap-3">
+                                <label class="form-label mb-0 text-light">Komprimierung Stufe:</label>
+                                <select id="compressLevel" class="form-select form-select-sm bg-secondary text-light border-0 w-auto">
+                                    <option value="low">Geringe Komprimierung (Höchste Qualität)</option>
+                                    <option value="medium" selected>Empfohlen (Gute Qualität & Größe)</option>
+                                    <option value="high">Starke Komprimierung (Kleinste Dateigröße)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Convert Button & Progress Bar -->
+                        <div class="d-flex flex-column flex-sm-row align-items-stretch align-items-sm-center justify-content-between gap-2">
+                            <button class="btn btn-outline-danger btn-sm" id="clearFilesBtn"><i class="bi bi-trash me-1"></i> Abbrechen</button>
+                            <button class="btn btn-primary btn-lg px-4 px-md-5 rounded-pill fw-bold shadow-sm" id="convertBtn">
+                                <i class="bi bi-gear-fill me-2"></i> Jetzt Konvertieren
+                            </button>
+                        </div>
+
+                        <!-- Progress Bar -->
+                        <div class="progress mt-3 d-none" id="progressBar" style="height: 8px;">
+                            <div class="progress-bar progress-bar-striped progress-bar-animated bg-primary w-100"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tool Grid Header -->
+        <div class="d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between mb-4 border-bottom border-secondary pb-2 gap-2">
+            <h4 class="fw-bold mb-0 text-white"><i class="bi bi-grid-fill me-2 text-primary"></i>Alle PDF-Tools im Überblick</h4>
+            <div class="btn-group btn-group-sm flex-wrap" id="categoryFilter">
+                <button class="btn btn-outline-secondary active" data-filter="all">Alle</button>
+                <button class="btn btn-outline-secondary" data-filter="convert">Konvertieren</button>
+                <button class="btn btn-outline-secondary" data-filter="office">Office</button>
+                <button class="btn btn-outline-secondary" data-filter="organize">Organisieren</button>
+            </div>
+        </div>
+
+        <!-- Category Grid Sections -->
+        <div class="row g-3 g-md-4" id="toolsGrid">
+            
+            <!-- Category: Compress -->
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3 tool-card" data-category="convert" data-tool="compress_pdf">
+                <div class="card bg-dark border-secondary h-100 hover-card p-3 shadow-sm">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="icon-box bg-primary bg-opacity-25 text-primary rounded-3 p-3 fs-3 flex-shrink-0">
+                            <i class="bi bi-file-earmark-zip-fill"></i>
+                        </div>
+                        <div>
+                            <h6 class="fw-bold mb-1 text-white">Compress PDF</h6>
+                            <p class="text-secondary small mb-0">Dateigröße optimieren & verkleinern</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Category: PDF Converter -->
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3 tool-card" data-category="convert" data-tool="pdf_converter">
+                <div class="card bg-dark border-secondary h-100 hover-card p-3 shadow-sm">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="icon-box bg-primary bg-opacity-25 text-primary rounded-3 p-3 fs-3 flex-shrink-0">
+                            <i class="bi bi-arrow-repeat"></i>
+                        </div>
+                        <div>
+                            <h6 class="fw-bold mb-1 text-white">PDF Converter</h6>
+                            <p class="text-secondary small mb-0">PDF in jedes Format konvertieren</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Category: PDF OCR -->
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3 tool-card" data-category="convert" data-tool="pdf_ocr">
+                <div class="card bg-dark border-secondary h-100 hover-card p-3 shadow-sm">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="icon-box bg-info bg-opacity-25 text-info rounded-3 p-3 fs-3 flex-shrink-0">
+                            <i class="bi bi-text-paragraph"></i>
+                        </div>
+                        <div>
+                            <h6 class="fw-bold mb-1 text-white">PDF OCR</h6>
+                            <p class="text-secondary small mb-0">Texterkennung in gescannten PDFs</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PDF to PDF/A -->
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3 tool-card" data-category="convert" data-tool="pdf_to_pdfa">
+                <div class="card bg-dark border-secondary h-100 hover-card p-3 shadow-sm">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="icon-box bg-primary bg-opacity-25 text-primary rounded-3 p-3 fs-3 flex-shrink-0">
+                            <i class="bi bi-archive-fill"></i>
+                        </div>
+                        <div>
+                            <h6 class="fw-bold mb-1 text-white">PDF to PDF/A</h6>
+                            <p class="text-secondary small mb-0">Archivierungsstandard konvertieren</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PDF to Image -->
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3 tool-card" data-category="convert" data-tool="pdf_to_jpg">
+                <div class="card bg-dark border-secondary h-100 hover-card p-3 shadow-sm">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="icon-box bg-success bg-opacity-25 text-success rounded-3 p-3 fs-3 flex-shrink-0">
+                            <i class="bi bi-file-earmark-image-fill"></i>
+                        </div>
+                        <div>
+                            <h6 class="fw-bold mb-1 text-white">PDF to JPG / PNG</h6>
+                            <p class="text-secondary small mb-0">PDF-Seiten in Bilder umwandeln</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Image to PDF -->
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3 tool-card" data-category="convert" data-tool="jpg_to_pdf">
+                <div class="card bg-dark border-secondary h-100 hover-card p-3 shadow-sm">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="icon-box bg-primary bg-opacity-25 text-primary rounded-3 p-3 fs-3 flex-shrink-0">
+                            <i class="bi bi-file-earmark-richtext-fill"></i>
+                        </div>
+                        <div>
+                            <h6 class="fw-bold mb-1 text-white">JPG / PNG to PDF</h6>
+                            <p class="text-secondary small mb-0">Bilder in PDF-Dokumente bringen</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PDF to Word -->
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3 tool-card" data-category="office" data-tool="pdf_to_word">
+                <div class="card bg-dark border-secondary h-100 hover-card p-3 shadow-sm">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="icon-box bg-primary bg-opacity-25 text-primary rounded-3 p-3 fs-3 flex-shrink-0">
+                            <i class="bi bi-file-earmark-word-fill"></i>
+                        </div>
+                        <div>
+                            <h6 class="fw-bold mb-1 text-white">PDF to Word</h6>
+                            <p class="text-secondary small mb-0">PDF in bearbeitbares DOCX umwandeln</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PDF to Excel -->
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3 tool-card" data-category="office" data-tool="pdf_to_excel">
+                <div class="card bg-dark border-secondary h-100 hover-card p-3 shadow-sm">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="icon-box bg-success bg-opacity-25 text-success rounded-3 p-3 fs-3 flex-shrink-0">
+                            <i class="bi bi-file-earmark-excel-fill"></i>
+                        </div>
+                        <div>
+                            <h6 class="fw-bold mb-1 text-white">PDF to Excel</h6>
+                            <p class="text-secondary small mb-0">Tabellen in XLSX exportieren</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PDF to PPT -->
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3 tool-card" data-category="office" data-tool="pdf_to_ppt">
+                <div class="card bg-dark border-secondary h-100 hover-card p-3 shadow-sm">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="icon-box bg-warning bg-opacity-25 text-warning rounded-3 p-3 fs-3 flex-shrink-0">
+                            <i class="bi bi-file-earmark-ppt-fill"></i>
+                        </div>
+                        <div>
+                            <h6 class="fw-bold mb-1 text-white">PDF to PPT</h6>
+                            <p class="text-secondary small mb-0">Folien in PowerPoint konvertieren</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Word to PDF -->
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3 tool-card" data-category="office" data-tool="word_to_pdf">
+                <div class="card bg-dark border-secondary h-100 hover-card p-3 shadow-sm">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="icon-box bg-primary bg-opacity-25 text-primary rounded-3 p-3 fs-3 flex-shrink-0">
+                            <i class="bi bi-file-earmark-text-fill"></i>
+                        </div>
+                        <div>
+                            <h6 class="fw-bold mb-1 text-white">Word to PDF</h6>
+                            <p class="text-secondary small mb-0">DOCX/DOC in PDF umwandeln</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Excel to PDF -->
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3 tool-card" data-category="office" data-tool="excel_to_pdf">
+                <div class="card bg-dark border-secondary h-100 hover-card p-3 shadow-sm">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="icon-box bg-success bg-opacity-25 text-success rounded-3 p-3 fs-3 flex-shrink-0">
+                            <i class="bi bi-file-earmark-spreadsheet-fill"></i>
+                        </div>
+                        <div>
+                            <h6 class="fw-bold mb-1 text-white">Excel to PDF</h6>
+                            <p class="text-secondary small mb-0">XLSX Tabellenblatt als PDF drucken</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PPT to PDF -->
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3 tool-card" data-category="office" data-tool="ppt_to_pdf">
+                <div class="card bg-dark border-secondary h-100 hover-card p-3 shadow-sm">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="icon-box bg-warning bg-opacity-25 text-warning rounded-3 p-3 fs-3 flex-shrink-0">
+                            <i class="bi bi-file-earmark-slides-fill"></i>
+                        </div>
+                        <div>
+                            <h6 class="fw-bold mb-1 text-white">PPT to PDF</h6>
+                            <p class="text-secondary small mb-0">Präsentationen in PDF umwandeln</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- OpenOffice to PDF -->
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3 tool-card" data-category="office" data-tool="openoffice_to_pdf">
+                <div class="card bg-dark border-secondary h-100 hover-card p-3 shadow-sm">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="icon-box bg-info bg-opacity-25 text-info rounded-3 p-3 fs-3 flex-shrink-0">
+                            <i class="bi bi-file-earmark-code-fill"></i>
+                        </div>
+                        <div>
+                            <h6 class="fw-bold mb-1 text-white">OpenOffice to PDF</h6>
+                            <p class="text-secondary small mb-0">ODT, ODS, ODP in PDF umwandeln</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TXT / RTF / HTML to PDF -->
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3 tool-card" data-category="convert" data-tool="txt_to_pdf">
+                <div class="card bg-dark border-secondary h-100 hover-card p-3 shadow-sm">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="icon-box bg-primary bg-opacity-25 text-primary rounded-3 p-3 fs-3 flex-shrink-0">
+                            <i class="bi bi-file-text-fill"></i>
+                        </div>
+                        <div>
+                            <h6 class="fw-bold mb-1 text-white">TXT / HTML / CSV to PDF</h6>
+                            <p class="text-secondary small mb-0">Textdateien & Tabellen in PDF</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ZIP to PDF -->
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3 tool-card" data-category="convert" data-tool="zip_to_pdf">
+                <div class="card bg-dark border-secondary h-100 hover-card p-3 shadow-sm">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="icon-box bg-primary bg-opacity-25 text-primary rounded-3 p-3 fs-3 flex-shrink-0">
+                            <i class="bi bi-file-zip-fill"></i>
+                        </div>
+                        <div>
+                            <h6 class="fw-bold mb-1 text-white">ZIP to PDF</h6>
+                            <p class="text-secondary small mb-0">Archivinhalte in ein PDF zusammenführen</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pages / iWork to PDF -->
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3 tool-card" data-category="office" data-tool="pages_to_pdf">
+                <div class="card bg-dark border-secondary h-100 hover-card p-3 shadow-sm">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="icon-box bg-primary bg-opacity-25 text-primary rounded-3 p-3 fs-3 flex-shrink-0">
+                            <i class="bi bi-apple"></i>
+                        </div>
+                        <div>
+                            <h6 class="fw-bold mb-1 text-white">Pages to PDF</h6>
+                            <p class="text-secondary small mb-0">iWork Pages Dokumente umwandeln</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Merge PDF -->
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3 tool-card" data-category="organize" data-tool="merge_pdf">
+                <div class="card bg-dark border-secondary h-100 hover-card p-3 shadow-sm">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="icon-box bg-primary bg-opacity-25 text-primary rounded-3 p-3 fs-3 flex-shrink-0">
+                            <i class="bi bi-plus-square-fill"></i>
+                        </div>
+                        <div>
+                            <h6 class="fw-bold mb-1 text-white">Merge PDF</h6>
+                            <p class="text-secondary small mb-0">Mehrere PDFs zusammenfügen</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Split PDF -->
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3 tool-card" data-category="organize" data-tool="split_pdf">
+                <div class="card bg-dark border-secondary h-100 hover-card p-3 shadow-sm">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="icon-box bg-primary bg-opacity-25 text-primary rounded-3 p-3 fs-3 flex-shrink-0">
+                            <i class="bi bi-scissors"></i>
+                        </div>
+                        <div>
+                            <h6 class="fw-bold mb-1 text-white">Split PDF</h6>
+                            <p class="text-secondary small mb-0">PDF in einzelne Seiten aufteilen</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Rotate PDF -->
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3 tool-card" data-category="organize" data-tool="rotate_pdf">
+                <div class="card bg-dark border-secondary h-100 hover-card p-3 shadow-sm">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="icon-box bg-primary bg-opacity-25 text-primary rounded-3 p-3 fs-3 flex-shrink-0">
+                            <i class="bi bi-arrow-clockwise"></i>
+                        </div>
+                        <div>
+                            <h6 class="fw-bold mb-1 text-white">Rotate PDF</h6>
+                            <p class="text-secondary small mb-0">PDF-Seiten beliebig drehen</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Delete PDF Pages -->
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3 tool-card" data-category="organize" data-tool="delete_pdf_pages">
+                <div class="card bg-dark border-secondary h-100 hover-card p-3 shadow-sm">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="icon-box bg-primary bg-opacity-25 text-primary rounded-3 p-3 fs-3 flex-shrink-0">
+                            <i class="bi bi-trash3-fill"></i>
+                        </div>
+                        <div>
+                            <h6 class="fw-bold mb-1 text-white">Delete PDF Pages</h6>
+                            <p class="text-secondary small mb-0">Unerwünschte Seiten entfernen</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Extract PDF Pages -->
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3 tool-card" data-category="organize" data-tool="extract_pdf_pages">
+                <div class="card bg-dark border-secondary h-100 hover-card p-3 shadow-sm">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="icon-box bg-info bg-opacity-25 text-info rounded-3 p-3 fs-3 flex-shrink-0">
+                            <i class="bi bi-box-arrow-up-right"></i>
+                        </div>
+                        <div>
+                            <h6 class="fw-bold mb-1 text-white">Extract PDF Pages</h6>
+                            <p class="text-secondary small mb-0">Bestimmte Seiten extrahieren</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Organize PDF -->
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3 tool-card" data-category="organize" data-tool="organize_pdf">
+                <div class="card bg-dark border-secondary h-100 hover-card p-3 shadow-sm">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="icon-box bg-success bg-opacity-25 text-success rounded-3 p-3 fs-3 flex-shrink-0">
+                            <i class="bi bi-grid-3x3"></i>
+                        </div>
+                        <div>
+                            <h6 class="fw-bold mb-1 text-white">Organize PDF</h6>
+                            <p class="text-secondary small mb-0">Seiten neu sortieren & ordnen</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="text-center py-3 border-top border-secondary text-secondary small bg-dark mt-auto">
+        <span>Made by Antonius</span>
+    </footer>
+
+    <!-- App Script -->
+    <script src="js/app.js"></script>
+</body>
+</html>
