@@ -4,6 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Smart Converter - Universal PDF Suite</title>
+
+    <!-- Favicon & Apple Touch Icon (Websites & iOS Home Screen Bookmarks) -->
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon.png">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    <meta name="apple-mobile-web-app-title" content="Smart Converter">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
@@ -11,13 +20,14 @@
 </head>
 <body class="bg-dark text-light d-flex flex-column min-vh-100 theme-dark" id="appBody">
 
-    <!-- LOGIN OVERLAY SCREEN (Kompakt & Sauber wie im Original) -->
+    <!-- LOGIN OVERLAY SCREEN (Kompakt & Sauber) -->
     <div id="loginScreen" class="position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center bg-black bg-opacity-90 backdrop-blur z-3 p-3">
         <div class="card login-card-compact p-4 rounded-4 shadow-lg text-center max-w-380 w-100 position-relative overflow-hidden">
             <div class="accent-glow-bg"></div>
             
             <div class="mb-3 position-relative z-1">
-                <div class="blue-icon-circle-md mx-auto mb-3 shadow"></div>
+                <!-- Custom Designer App Logo -->
+                <img src="logo.png" alt="Smart Converter Logo" class="brand-logo-img mx-auto mb-3 shadow rounded-4">
                 <h3 class="fw-bold text-white mb-1">Smart Converter</h3>
                 <p class="text-primary extra-small fw-semibold mb-0">Made by Antonius</p>
             </div>
@@ -64,7 +74,7 @@
         <!-- App Switcher Dropdown -->
         <div class="dropdown me-3">
             <a class="navbar-brand d-flex align-items-center gap-2 fw-bold text-primary fs-4 dropdown-toggle no-caret cursor-pointer" href="#" id="appSwitcherDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                <i class="bi bi-file-earmark-pdf-fill fs-2"></i>
+                <img src="favicon.png" alt="Smart Converter Logo" class="navbar-logo-img me-1 rounded-2">
                 <span>Smart Converter</span>
                 <i class="bi bi-chevron-down fs-6 text-secondary ms-1"></i>
             </a>
@@ -72,7 +82,7 @@
                 <li><span class="dropdown-header text-uppercase small text-secondary fw-bold">Select App</span></li>
                 <li>
                     <a class="dropdown-item active rounded-3 py-2 d-flex align-items-center justify-content-between bg-primary-blue text-white" href="#">
-                        <span><i class="bi bi-file-earmark-pdf-fill me-2"></i>Smart Converter</span>
+                        <span><img src="favicon.png" width="20" height="20" class="me-2 rounded-1">Smart Converter</span>
                         <i class="bi bi-check-circle-fill"></i>
                     </a>
                 </li>
@@ -126,9 +136,7 @@
 
                 <div class="modal-header border-secondary border-opacity-25 position-relative z-1">
                     <h5 class="modal-title fw-bold text-white d-flex align-items-center gap-2" id="adminModalLabel">
-                        <div class="blue-icon-circle-sm">
-                            <i class="bi bi-shield-check text-white"></i>
-                        </div>
+                        <img src="favicon.png" width="32" height="32" class="rounded-2 me-1">
                         <span>Admin User Management</span>
                     </h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -338,7 +346,7 @@
             </div>
         </div>
 
-        <!-- Category Grid Sections mit scharfen, farbigen Original-Symbol-Badges -->
+        <!-- Category Grid Sections -->
         <div class="row g-3 g-md-4" id="toolsGrid">
             
             <!-- Category: Compress -->

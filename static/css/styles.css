@@ -18,6 +18,20 @@ body {
     -webkit-tap-highlight-color: transparent;
 }
 
+/* Custom Designer Brand Logos */
+.brand-logo-img {
+    width: 64px;
+    height: 64px;
+    object-fit: cover;
+    box-shadow: 0 0 20px rgba(13, 110, 253, 0.6);
+}
+
+.navbar-logo-img {
+    width: 28px;
+    height: 28px;
+    object-fit: cover;
+}
+
 /* Sign In Card Matching Style */
 .main-login-card {
     background: var(--bg-card-dark) !important;
