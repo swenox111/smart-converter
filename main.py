@@ -42,7 +42,10 @@ async def convert_file(
     files: List[UploadFile] = File(...),
     rotation_angle: Optional[int] = Form(90),
     page_numbers: Optional[str] = Form(None), # e.g. "1,2,5"
-    compression_level: Optional[str] = Form("medium")
+    compression_level: Optional[str] = Form("medium"),
+    watermark_text: Optional[str] = Form(None),
+    add_page_numbers: Optional[bool] = Form(True),
+    password: Optional[str] = Form(None)
 ):
     if not files:
         raise HTTPException(status_code=400, detail="No files uploaded.")
@@ -160,6 +163,17 @@ async def convert_file(
         elif tool_id == "pdf_to_pdfa":
             out_file += ".pdf"
             pdf_engine.convert_pdf_to_pdfa(saved_files[0], out_file)
+
+        # 10. Watermark, Page Numbers & Security (Protect / Unlock)
+        elif tool_id in ("add_watermark", "add_page_numbers"):
+            out_file += ".pdf"
+            pdf_engine.add_watermark_and_numbers(saved_files[0], out_file, watermark_text=watermark_text or "", add_page_numbers=bool(add_page_numbers))
+        elif tool_id == "protect_pdf":
+            out_file += ".pdf"
+            pdf_engine.protect_pdf(saved_files[0], out_file, password or "")
+        elif tool_id == "unlock_pdf":
+            out_file += ".pdf"
+            pdf_engine.unlock_pdf(saved_files[0], out_file, password or "")
 
         else:
             out_file += ".pdf"

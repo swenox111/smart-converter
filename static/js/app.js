@@ -251,7 +251,10 @@ document.addEventListener("DOMContentLoaded", () => {
             desc_rotate: "Rotate PDF pages freely",
             desc_delete: "Remove unwanted pages",
             desc_extract: "Extract specific pages",
-            desc_organize: "Reorder & organize pages"
+            desc_organize: "Reorder & organize pages",
+            desc_watermark: "Add watermark & page numbers",
+            desc_protect: "Encrypt PDF with password",
+            desc_unlock: "Remove PDF password"
         },
         de: {
             lblUsername: "Benutzername",
@@ -302,7 +305,10 @@ document.addEventListener("DOMContentLoaded", () => {
             desc_rotate: "PDF-Seiten beliebig drehen",
             desc_delete: "Unerwünschte Seiten entfernen",
             desc_extract: "Bestimmte Seiten extrahieren",
-            desc_organize: "Seiten neu sortieren & ordnen"
+            desc_organize: "Seiten neu sortieren & ordnen",
+            desc_watermark: "Wasserzeichen & Seitenzahlen stempeln",
+            desc_protect: "PDF mit Passwort schützen",
+            desc_unlock: "Passwort aus PDF entfernen"
         }
     };
 
@@ -420,6 +426,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const optionRotate = document.getElementById("optionRotate");
     const optionPages = document.getElementById("optionPages");
     const optionCompress = document.getElementById("optionCompress");
+    const optionWatermark = document.getElementById("optionWatermark");
+    const optionPassword = document.getElementById("optionPassword");
 
     const toolLabels = {
         "compress_pdf": "Compress PDF",
@@ -443,7 +451,10 @@ document.addEventListener("DOMContentLoaded", () => {
         "rotate_pdf": "Rotate PDF",
         "delete_pdf_pages": "Delete PDF Pages",
         "extract_pdf_pages": "Extract PDF Pages",
-        "organize_pdf": "Organize PDF"
+        "organize_pdf": "Organize PDF",
+        "add_watermark": "Wasserzeichen & Seitenzahlen",
+        "protect_pdf": "PDF Verschlüsseln",
+        "unlock_pdf": "PDF Entsperren"
     };
 
     function updateToolUI(toolId) {
@@ -454,22 +465,27 @@ document.addEventListener("DOMContentLoaded", () => {
         const activeCard = document.querySelector(`.tool-card[data-tool="${toolId}"] .card`);
         if (activeCard) activeCard.classList.add("active-card");
 
-        optionRotate.classList.add("d-none");
-        optionRotate.classList.remove("d-flex");
-        optionPages.classList.add("d-none");
-        optionCompress.classList.add("d-none");
+        if (optionRotate) { optionRotate.classList.add("d-none"); optionRotate.classList.remove("d-flex"); }
+        if (optionPages) optionPages.classList.add("d-none");
+        if (optionCompress) { optionCompress.classList.add("d-none"); optionCompress.classList.remove("d-flex"); }
+        if (optionWatermark) optionWatermark.classList.add("d-none");
+        if (optionPassword) optionPassword.classList.add("d-none");
 
         let hasOptions = false;
         if (toolId === "rotate_pdf") {
-            optionRotate.classList.remove("d-none");
-            optionRotate.classList.add("d-flex");
+            if (optionRotate) { optionRotate.classList.remove("d-none"); optionRotate.classList.add("d-flex"); }
             hasOptions = true;
         } else if (["delete_pdf_pages", "extract_pdf_pages", "organize_pdf"].includes(toolId)) {
-            optionPages.classList.remove("d-none");
+            if (optionPages) optionPages.classList.remove("d-none");
             hasOptions = true;
         } else if (toolId === "compress_pdf") {
-            optionCompress.classList.remove("d-none");
-            optionCompress.classList.add("d-flex");
+            if (optionCompress) { optionCompress.classList.remove("d-none"); optionCompress.classList.add("d-flex"); }
+            hasOptions = true;
+        } else if (toolId === "add_watermark") {
+            if (optionWatermark) optionWatermark.classList.remove("d-none");
+            hasOptions = true;
+        } else if (["protect_pdf", "unlock_pdf"].includes(toolId)) {
+            if (optionPassword) optionPassword.classList.remove("d-none");
             hasOptions = true;
         }
 
@@ -573,6 +589,14 @@ document.addEventListener("DOMContentLoaded", () => {
             formData.append("page_numbers", document.getElementById("pageNumbers").value);
         } else if (activeTool === "compress_pdf") {
             formData.append("compression_level", document.getElementById("compressLevel").value);
+        } else if (activeTool === "add_watermark") {
+            const wmInp = document.getElementById("watermarkTextInput");
+            const chkInp = document.getElementById("checkAddPageNumbers");
+            formData.append("watermark_text", wmInp ? wmInp.value : "");
+            formData.append("add_page_numbers", chkInp ? chkInp.checked : true);
+        } else if (["protect_pdf", "unlock_pdf"].includes(activeTool)) {
+            const passInp = document.getElementById("pdfPasswordInput");
+            formData.append("password", passInp ? passInp.value : "");
         }
 
         convertBtn.disabled = true;
@@ -1168,6 +1192,9 @@ document.addEventListener("DOMContentLoaded", () => {
     let lessonTimes = JSON.parse(JSON.stringify(DEFAULT_LESSON_TIMES));
     let timetableData = {}; // key: "row_col", val: subjectObj
     let gradeData = []; // list of { subject, written, oral, weight }
+    let homeworkData = []; // list of { id, subject, description, dueDate, category, completed }
+    let examData = []; // list of { id, subject, title, examDateTime, type }
+    let currentHwFilter = "all";
 
     function getPlannerStorageKey() {
         const user = getCurrentUser();
@@ -1189,7 +1216,9 @@ document.addEventListener("DOMContentLoaded", () => {
             subjects: plannerSubjects,
             lessonTimes: lessonTimes,
             timetable: timetableData,
-            grades: gradeData
+            grades: gradeData,
+            homework: homeworkData,
+            exams: examData
         };
 
         localStorage.setItem(key, JSON.stringify(state));
@@ -1227,6 +1256,12 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
                 if (parsed.grades && Array.isArray(parsed.grades)) {
                     gradeData = parsed.grades;
+                }
+                if (parsed.homework && Array.isArray(parsed.homework)) {
+                    homeworkData = parsed.homework;
+                }
+                if (parsed.exams && Array.isArray(parsed.exams)) {
+                    examData = parsed.exams;
                 }
             } catch (e) {
                 console.error("Error loading planner state", e);
@@ -1615,11 +1650,317 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
+    function populateSubjectDropdowns() {
+        const hwSelect = document.getElementById("hwSubjectSelect");
+        const examSelect = document.getElementById("examSubjectSelect");
+        if (!hwSelect && !examSelect) return;
+
+        let optionsHtml = plannerSubjects.map(s => `<option value="${s.name}">${s.name}</option>`).join("");
+        if (hwSelect) hwSelect.innerHTML = optionsHtml;
+        if (examSelect) examSelect.innerHTML = optionsHtml;
+    }
+
+    function initHomeworkEngine() {
+        populateSubjectDropdowns();
+        const datePicker = document.getElementById("hwDatePicker");
+        const dueDateInp = document.getElementById("hwDueDateInput");
+
+        if (datePicker) {
+            if (!datePicker.value) datePicker.value = "2026-09-12";
+            datePicker.addEventListener("change", () => {
+                if (dueDateInp) dueDateInp.value = datePicker.value;
+                renderHomeworkTasks();
+            });
+        }
+
+        const btnPrev = document.getElementById("btnHwPrevDay");
+        const btnToday = document.getElementById("btnHwToday");
+        const btnTomorrow = document.getElementById("btnHwTomorrow");
+        const btnNext = document.getElementById("btnHwNextDay");
+
+        if (btnPrev) {
+            btnPrev.addEventListener("click", () => {
+                if (!datePicker) return;
+                const cur = new Date(datePicker.value || "2026-09-12");
+                cur.setDate(cur.getDate() - 1);
+                datePicker.value = cur.toISOString().split("T")[0];
+                datePicker.dispatchEvent(new Event("change"));
+            });
+        }
+        if (btnToday) {
+            btnToday.addEventListener("click", () => {
+                if (!datePicker) return;
+                const todayStr = new Date().toISOString().split("T")[0];
+                datePicker.value = todayStr < "2026-09-12" ? "2026-09-12" : todayStr;
+                datePicker.dispatchEvent(new Event("change"));
+            });
+        }
+        if (btnTomorrow) {
+            btnTomorrow.addEventListener("click", () => {
+                if (!datePicker) return;
+                datePicker.value = "2026-09-12";
+                datePicker.dispatchEvent(new Event("change"));
+            });
+        }
+        if (btnNext) {
+            btnNext.addEventListener("click", () => {
+                if (!datePicker) return;
+                const cur = new Date(datePicker.value || "2026-09-12");
+                cur.setDate(cur.getDate() + 1);
+                datePicker.value = cur.toISOString().split("T")[0];
+                datePicker.dispatchEvent(new Event("change"));
+            });
+        }
+
+        const formAdd = document.getElementById("formAddHomework");
+        if (formAdd) {
+            formAdd.addEventListener("submit", (e) => {
+                e.preventDefault();
+                const subject = document.getElementById("hwSubjectSelect")?.value || "Mathe";
+                const description = document.getElementById("hwDescriptionInput")?.value.trim();
+                const dueDate = document.getElementById("hwDueDateInput")?.value || datePicker?.value || "2026-09-12";
+                const category = document.getElementById("hwCategorySelect")?.value || "normal";
+
+                if (!description) return;
+
+                homeworkData.push({
+                    id: Date.now(),
+                    subject,
+                    description,
+                    dueDate,
+                    category,
+                    completed: false
+                });
+
+                document.getElementById("hwDescriptionInput").value = "";
+                savePlannerState();
+                renderHomeworkTasks();
+            });
+        }
+
+        document.querySelectorAll("#hwFilterGroup button").forEach(btn => {
+            btn.addEventListener("click", () => {
+                document.querySelectorAll("#hwFilterGroup button").forEach(b => {
+                    b.classList.remove("active", "btn-primary");
+                    b.classList.add("btn-outline-secondary", "text-light");
+                });
+                btn.classList.add("active", "btn-primary");
+                btn.classList.remove("btn-outline-secondary", "text-light");
+                currentHwFilter = btn.getAttribute("data-hwfilter") || "all";
+                renderHomeworkTasks();
+            });
+        });
+
+        renderHomeworkTasks();
+    }
+
+    function renderHomeworkTasks() {
+        const taskList = document.getElementById("hwTaskList");
+        const countPendingEl = document.getElementById("countHwPending");
+        if (!taskList) return;
+
+        taskList.innerHTML = "";
+
+        const pendingCount = homeworkData.filter(h => !h.completed).length;
+        if (countPendingEl) countPendingEl.textContent = pendingCount;
+
+        const selectedDate = document.getElementById("hwDatePicker")?.value || "2026-09-12";
+
+        let filtered = [...homeworkData];
+        if (currentHwFilter === "pending") {
+            filtered = filtered.filter(h => !h.completed);
+        } else if (currentHwFilter === "selectedDate") {
+            filtered = filtered.filter(h => h.dueDate === selectedDate);
+        } else if (currentHwFilter === "completed") {
+            filtered = filtered.filter(h => h.completed);
+        }
+
+        filtered.sort((a, b) => a.dueDate.localeCompare(b.dueDate));
+
+        if (filtered.length === 0) {
+            taskList.innerHTML = `
+                <div class="text-center py-4 text-secondary">
+                    <i class="bi bi-check2-circle display-4 text-success d-block mb-2"></i>
+                    <p class="mb-0 small fw-bold">Keine Hausaufgaben in dieser Ansicht!</p>
+                </div>
+            `;
+            return;
+        }
+
+        filtered.forEach((task) => {
+            const subObj = plannerSubjects.find(s => s.name === task.subject) || { color: "#2563eb", text: "#ffffff" };
+            const item = document.createElement("div");
+            item.className = `card main-login-card p-3 rounded-3 border-secondary ${task.completed ? 'opacity-50' : ''}`;
+
+            const isTomorrow = task.dueDate === "2026-09-12";
+            let dateBadgeClass = "bg-secondary";
+            let dateLabel = task.dueDate;
+            if (isTomorrow) { dateBadgeClass = "bg-primary-blue"; dateLabel = "Morgen (12.09.)"; }
+
+            item.innerHTML = `
+                <div class="d-flex align-items-start justify-content-between gap-2">
+                    <div class="d-flex align-items-start gap-3">
+                        <input class="form-check-input mt-1 cursor-pointer hw-check-input" type="checkbox" ${task.completed ? 'checked' : ''} data-id="${task.id}" style="width: 20px; height: 20px;">
+                        <div>
+                            <div class="d-flex align-items-center gap-2 mb-1">
+                                <span class="badge rounded-pill px-2 py-1 extra-small fw-bold" style="background-color: ${subObj.color}; color: ${subObj.text || '#ffffff'};">${task.subject}</span>
+                                <span class="badge ${dateBadgeClass} extra-small rounded-pill px-2"><i class="bi bi-calendar-event me-1"></i>${dateLabel}</span>
+                            </div>
+                            <p class="mb-0 text-white ${task.completed ? 'text-decoration-line-through text-secondary' : 'fw-semibold'}">${task.description}</p>
+                        </div>
+                    </div>
+                    <button class="btn btn-sm btn-link text-danger p-0 ms-2" onclick="deleteHomeworkTask(${task.id})"><i class="bi bi-trash fs-6"></i></button>
+                </div>
+            `;
+            taskList.appendChild(item);
+        });
+
+        document.querySelectorAll(".hw-check-input").forEach(chk => {
+            chk.addEventListener("change", (e) => {
+                const id = parseInt(e.target.getAttribute("data-id"));
+                const target = homeworkData.find(h => h.id === id);
+                if (target) {
+                    target.completed = e.target.checked;
+                    savePlannerState();
+                    renderHomeworkTasks();
+                }
+            });
+        });
+    }
+
+    window.deleteHomeworkTask = (id) => {
+        homeworkData = homeworkData.filter(h => h.id !== id);
+        savePlannerState();
+        renderHomeworkTasks();
+    };
+
+    function initExamEngine() {
+        populateSubjectDropdowns();
+        const formAddExam = document.getElementById("formAddExam");
+        if (formAddExam) {
+            formAddExam.addEventListener("submit", (e) => {
+                e.preventDefault();
+                const subject = document.getElementById("examSubjectSelect")?.value || "Mathe";
+                const title = document.getElementById("examTitleInput")?.value.trim();
+                const examDateTime = document.getElementById("examDateTimeInput")?.value;
+                const type = document.getElementById("examTypeSelect")?.value || "Klassenarbeit";
+
+                if (!title || !examDateTime) return;
+
+                examData.push({
+                    id: Date.now(),
+                    subject,
+                    title,
+                    examDateTime,
+                    type
+                });
+
+                document.getElementById("examTitleInput").value = "";
+                savePlannerState();
+                renderExamCards();
+            });
+        }
+
+        renderExamCards();
+        setInterval(renderExamCards, 30000);
+    }
+
+    function renderExamCards() {
+        const grid = document.getElementById("examCardsGrid");
+        const countEl = document.getElementById("countUpcomingExams");
+        if (!grid) return;
+
+        grid.innerHTML = "";
+
+        const now = new Date();
+        examData.sort((a, b) => new Date(a.examDateTime) - new Date(b.examDateTime));
+
+        const upcomingCount = examData.filter(e => new Date(e.examDateTime) > now).length;
+        if (countEl) countEl.textContent = `${upcomingCount} Geplant`;
+
+        if (examData.length === 0) {
+            grid.innerHTML = `
+                <div class="col-12 text-center py-5 text-secondary">
+                    <i class="bi bi-alarm display-3 text-primary d-block mb-2"></i>
+                    <p class="mb-0 fw-bold">Keine Klausuren eingetragen.</p>
+                    <span class="extra-small">Trage links deine nächsten Arbeiten ein, um den Live-Countdown zu starten!</span>
+                </div>
+            `;
+            return;
+        }
+
+        examData.forEach(exam => {
+            const subObj = plannerSubjects.find(s => s.name === exam.subject) || { color: "#2563eb", text: "#ffffff" };
+            const examDate = new Date(exam.examDateTime);
+            const diffMs = examDate - now;
+
+            let countdownText = "";
+            let badgeBg = "bg-success";
+            let badgeText = "📅 Geplant";
+
+            if (diffMs <= 0) {
+                countdownText = "✅ Absolviert";
+                badgeBg = "bg-secondary";
+                badgeText = "Vorüber";
+            } else {
+                const totalHours = Math.floor(diffMs / (1000 * 60 * 60));
+                const days = Math.floor(totalHours / 24);
+                const hours = totalHours % 24;
+                const mins = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+
+                if (days > 0) {
+                    countdownText = `${days} Tag${days > 1 ? 'e' : ''} ${hours} Std. ${mins} Min.`;
+                } else {
+                    countdownText = `${hours} Std. ${mins} Min.`;
+                }
+
+                if (days < 3) {
+                    badgeBg = "bg-danger text-white icon-pulse";
+                    badgeText = "⚠️ BALD!";
+                } else if (days < 7) {
+                    badgeBg = "bg-warning text-dark";
+                    badgeText = "⏳ Diese Woche";
+                }
+            }
+
+            const formattedDateStr = examDate.toLocaleDateString('de-DE', { weekday: 'short', day: '2-digit', month: '2-digit', year: 'numeric' }) + " um " + examDate.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' }) + " Uhr";
+
+            const col = document.createElement("div");
+            col.className = "col-12 col-md-6";
+            col.innerHTML = `
+                <div class="card main-login-card p-3 rounded-4 border-secondary shadow-sm h-100 position-relative overflow-hidden">
+                    <div class="d-flex align-items-center justify-content-between mb-2">
+                        <span class="badge rounded-pill px-3 py-1 fs-6 fw-bold" style="background-color: ${subObj.color}; color: ${subObj.text || '#ffffff'};">${exam.subject}</span>
+                        <span class="badge ${badgeBg} extra-small rounded-pill px-2 py-1 fw-bold">${badgeText}</span>
+                    </div>
+                    <h6 class="fw-bold text-white mb-1">${exam.title}</h6>
+                    <p class="extra-small text-secondary mb-3"><i class="bi bi-calendar3 me-1"></i>${formattedDateStr}</p>
+                    <div class="bg-black bg-opacity-40 p-2 rounded-3 text-center border border-secondary border-opacity-25 mb-2">
+                        <span class="extra-small text-secondary text-uppercase fw-bold">Verbleibende Zeit:</span>
+                        <div class="fs-5 fw-bold text-primary font-monospace mt-1">${countdownText}</div>
+                    </div>
+                    <div class="text-end">
+                        <button class="btn btn-sm btn-link text-danger p-0" onclick="deleteExamCard(${exam.id})"><i class="bi bi-trash me-1"></i> Löschen</button>
+                    </div>
+                </div>
+            `;
+            grid.appendChild(col);
+        });
+    }
+
+    window.deleteExamCard = (id) => {
+        examData = examData.filter(e => e.id !== id);
+        savePlannerState();
+        renderExamCards();
+    };
+
     function initPlannerEngine() {
         loadPlannerState();
         renderSubjectPalette();
         renderTimetableGrid();
         renderGradeTable();
+        initHomeworkEngine();
+        initExamEngine();
 
         const studentName = document.getElementById("plannerStudentName");
         const studentClass = document.getElementById("plannerClass");
@@ -1631,7 +1972,6 @@ document.addEventListener("DOMContentLoaded", () => {
         if (studentYear) studentYear.addEventListener("input", savePlannerState);
 
         if (themeSelect) {
-            // Apply initial theme
             const canvas = document.getElementById("plannerPrintCanvas");
             if (canvas) {
                 canvas.classList.remove("theme-planner-classic", "theme-planner-midnight", "theme-planner-pastel", "theme-planner-neon", "theme-planner-printer");
@@ -1650,8 +1990,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const tabStundenplan = document.getElementById("tabStundenplan");
     const tabNotenrechner = document.getElementById("tabNotenrechner");
+    const tabHausaufgaben = document.getElementById("tabHausaufgaben");
+    const tabKlausuren = document.getElementById("tabKlausuren");
+
     const stundenplanSection = document.getElementById("stundenplanSection");
     const notenrechnerSection = document.getElementById("notenrechnerSection");
+    const hausaufgabenSection = document.getElementById("hausaufgabenSection");
+    const klausurenSection = document.getElementById("klausurenSection");
 
     const plannerThemeSelect = document.getElementById("plannerThemeSelect");
     const btnPrintPlanner = document.getElementById("btnPrintPlanner");
@@ -1660,14 +2005,24 @@ document.addEventListener("DOMContentLoaded", () => {
     const btnPrintNoten = document.getElementById("btnPrintNoten");
     const btnSaveNotenPdf = document.getElementById("btnSaveNotenPdf");
 
-    if (tabStundenplan && tabNotenrechner) {
+    function resetSubTabStyles() {
+        [tabStundenplan, tabNotenrechner, tabHausaufgaben, tabKlausuren].forEach(tab => {
+            if (tab) {
+                tab.classList.remove("btn-primary-blue");
+                tab.classList.add("btn-outline-secondary", "text-light");
+            }
+        });
+        [stundenplanSection, notenrechnerSection, hausaufgabenSection, klausurenSection].forEach(sec => {
+            if (sec) sec.classList.add("d-none");
+        });
+    }
+
+    if (tabStundenplan) {
         tabStundenplan.addEventListener("click", () => {
+            resetSubTabStyles();
             tabStundenplan.classList.add("btn-primary-blue");
             tabStundenplan.classList.remove("btn-outline-secondary", "text-light");
-            tabNotenrechner.classList.remove("btn-primary-blue");
-            tabNotenrechner.classList.add("btn-outline-secondary", "text-light");
             if (stundenplanSection) stundenplanSection.classList.remove("d-none");
-            if (notenrechnerSection) notenrechnerSection.classList.add("d-none");
 
             if (plannerThemeSelect) plannerThemeSelect.classList.remove("d-none");
             if (btnEditTimesModal) btnEditTimesModal.classList.remove("d-none");
@@ -1678,14 +2033,14 @@ document.addEventListener("DOMContentLoaded", () => {
             if (btnPrintNoten) btnPrintNoten.classList.add("d-none");
             if (btnSaveNotenPdf) btnSaveNotenPdf.classList.add("d-none");
         });
+    }
 
+    if (tabNotenrechner) {
         tabNotenrechner.addEventListener("click", () => {
+            resetSubTabStyles();
             tabNotenrechner.classList.add("btn-primary-blue");
             tabNotenrechner.classList.remove("btn-outline-secondary", "text-light");
-            tabStundenplan.classList.remove("btn-primary-blue");
-            tabStundenplan.classList.add("btn-outline-secondary", "text-light");
             if (notenrechnerSection) notenrechnerSection.classList.remove("d-none");
-            if (stundenplanSection) stundenplanSection.classList.add("d-none");
 
             if (plannerThemeSelect) plannerThemeSelect.classList.add("d-none");
             if (btnEditTimesModal) btnEditTimesModal.classList.add("d-none");
@@ -1697,6 +2052,46 @@ document.addEventListener("DOMContentLoaded", () => {
             if (btnSaveNotenPdf) btnSaveNotenPdf.classList.remove("d-none");
 
             renderGradeTable();
+        });
+    }
+
+    if (tabHausaufgaben) {
+        tabHausaufgaben.addEventListener("click", () => {
+            resetSubTabStyles();
+            tabHausaufgaben.classList.add("btn-primary-blue");
+            tabHausaufgaben.classList.remove("btn-outline-secondary", "text-light");
+            if (hausaufgabenSection) hausaufgabenSection.classList.remove("d-none");
+
+            if (plannerThemeSelect) plannerThemeSelect.classList.add("d-none");
+            if (btnEditTimesModal) btnEditTimesModal.classList.add("d-none");
+            if (btnPrintPlanner) btnPrintPlanner.classList.add("d-none");
+            if (btnSavePlannerPdf) btnSavePlannerPdf.classList.add("d-none");
+            if (btnResetPlanner) btnResetPlanner.classList.add("d-none");
+
+            if (btnPrintNoten) btnPrintNoten.classList.add("d-none");
+            if (btnSaveNotenPdf) btnSaveNotenPdf.classList.add("d-none");
+
+            initHomeworkEngine();
+        });
+    }
+
+    if (tabKlausuren) {
+        tabKlausuren.addEventListener("click", () => {
+            resetSubTabStyles();
+            tabKlausuren.classList.add("btn-primary-blue");
+            tabKlausuren.classList.remove("btn-outline-secondary", "text-light");
+            if (klausurenSection) klausurenSection.classList.remove("d-none");
+
+            if (plannerThemeSelect) plannerThemeSelect.classList.add("d-none");
+            if (btnEditTimesModal) btnEditTimesModal.classList.add("d-none");
+            if (btnPrintPlanner) btnPrintPlanner.classList.add("d-none");
+            if (btnSavePlannerPdf) btnSavePlannerPdf.classList.add("d-none");
+            if (btnResetPlanner) btnResetPlanner.classList.add("d-none");
+
+            if (btnPrintNoten) btnPrintNoten.classList.add("d-none");
+            if (btnSaveNotenPdf) btnSaveNotenPdf.classList.add("d-none");
+
+            initExamEngine();
         });
     }
 
@@ -1787,6 +2182,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 activeSubject = newSub;
                 savePlannerState();
                 renderSubjectPalette();
+                populateSubjectDropdowns();
             }
         });
     }

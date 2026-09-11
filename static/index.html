@@ -355,6 +355,31 @@
                                     <option value="high">High Compression (Smallest Size)</option>
                                 </select>
                             </div>
+
+                            <!-- Watermark & Page Numbers Option -->
+                            <div id="optionWatermark" class="d-none">
+                                <div class="row g-2 align-items-center">
+                                    <div class="col-12 col-md-7">
+                                        <label class="form-label mb-1 text-light" id="lblWatermarkText">Wasserzeichen-Text (z.B. ENTWURF, KOPIE):</label>
+                                        <input type="text" id="watermarkTextInput" class="form-control form-control-sm dark-input text-light rounded-pill px-3" placeholder="z. B. ENTWURF oder KOPIE">
+                                    </div>
+                                    <div class="col-12 col-md-5 pt-md-3">
+                                        <div class="form-check form-switch text-start">
+                                            <input class="form-check-input" type="checkbox" id="checkAddPageNumbers" checked>
+                                            <label class="form-check-label text-light small fw-bold" for="checkAddPageNumbers" id="lblCheckPageNumbers">Seitenzahlen ("Seite X von Y")</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Password Option (Protect / Unlock) -->
+                            <div id="optionPassword" class="d-none">
+                                <label class="form-label mb-1 text-light" id="lblPdfPassword">Passwort eingeben:</label>
+                                <div class="input-group input-group-sm" style="max-width: 320px;">
+                                    <span class="input-group-text dark-input-addon text-secondary"><i class="bi bi-key-fill"></i></span>
+                                    <input type="password" id="pdfPasswordInput" class="form-control dark-input text-light" placeholder="Passwort eingeben">
+                                </div>
+                            </div>
                         </div>
 
                         <!-- Convert Button & Progress Bar -->
@@ -713,6 +738,51 @@
                         <div>
                             <h6 class="fw-bold mb-1 text-white">Organize PDF</h6>
                             <p class="text-secondary small mb-0" data-i18n="desc_organize">Reorder & organize pages</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Watermark & Page Numbers -->
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3 tool-card" data-category="organize" data-tool="add_watermark">
+                <div class="card main-login-card border-secondary h-100 hover-card p-3 shadow-sm">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="icon-badge badge-purple rounded-3 flex-shrink-0">
+                            <i class="bi bi-fonts fs-4 text-white"></i>
+                        </div>
+                        <div>
+                            <h6 class="fw-bold mb-1 text-white">Wasserzeichen & Nummern</h6>
+                            <p class="text-secondary small mb-0" data-i18n="desc_watermark">Wasserzeichen & Seitenzahlen</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Protect PDF -->
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3 tool-card" data-category="organize" data-tool="protect_pdf">
+                <div class="card main-login-card border-secondary h-100 hover-card p-3 shadow-sm">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="icon-badge badge-red rounded-3 flex-shrink-0">
+                            <i class="bi bi-lock-fill fs-4 text-white"></i>
+                        </div>
+                        <div>
+                            <h6 class="fw-bold mb-1 text-white">PDF Verschlüsseln</h6>
+                            <p class="text-secondary small mb-0" data-i18n="desc_protect">PDF mit Passwort schützen</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Unlock PDF -->
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3 tool-card" data-category="organize" data-tool="unlock_pdf">
+                <div class="card main-login-card border-secondary h-100 hover-card p-3 shadow-sm">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="icon-badge badge-amber rounded-3 flex-shrink-0">
+                            <i class="bi bi-unlock-fill fs-4 text-white"></i>
+                        </div>
+                        <div>
+                            <h6 class="fw-bold mb-1 text-white">PDF Entsperren</h6>
+                            <p class="text-secondary small mb-0" data-i18n="desc_unlock">Passwort aus PDF entfernen</p>
                         </div>
                     </div>
                 </div>
@@ -1087,9 +1157,11 @@
             <div class="card main-login-card p-3 mb-4 rounded-4 shadow-lg border-secondary border-opacity-25">
                 <div class="row g-3 align-items-center justify-content-between">
                     <div class="col-12 col-md-auto d-flex align-items-center gap-2">
-                        <div class="btn-group rounded-pill bg-black bg-opacity-40 p-1 border border-secondary border-opacity-25" role="group">
+                        <div class="btn-group rounded-pill bg-black bg-opacity-40 p-1 border border-secondary border-opacity-25 flex-wrap" role="group">
                             <button type="button" class="btn btn-sm btn-primary-blue rounded-pill px-3 fw-bold" id="tabStundenplan"><i class="bi bi-table me-1"></i> Stundenplan</button>
                             <button type="button" class="btn btn-sm btn-outline-secondary text-light rounded-pill px-3 fw-bold border-0" id="tabNotenrechner"><i class="bi bi-calculator-fill me-1"></i> Notenrechner</button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary text-light rounded-pill px-3 fw-bold border-0" id="tabHausaufgaben"><i class="bi bi-journal-bookmark-fill me-1"></i> Hausaufgabenheft</button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary text-light rounded-pill px-3 fw-bold border-0" id="tabKlausuren"><i class="bi bi-alarm-fill me-1"></i> Klausuren-Countdown</button>
                         </div>
                     </div>
 
@@ -1303,6 +1375,144 @@
                     <div class="d-flex align-items-center justify-content-between pt-3 mt-2 border-top text-muted extra-small">
                         <span><i class="bi bi-shield-check me-1"></i> Erstellt mit Smart Suite • Made by Antonius</span>
                         <span>smart-converter-sc9w.onrender.com</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VIEW 3: HAUSAUFGABENHEFT -->
+            <div id="hausaufgabenSection" class="d-none">
+                <!-- Date Bar & Calendar Navigation -->
+                <div class="card main-login-card p-3 mb-4 rounded-4 border-secondary border-opacity-25 shadow-lg">
+                    <div class="row g-3 align-items-center justify-content-between">
+                        <div class="col-12 col-md-auto d-flex align-items-center gap-2 flex-wrap">
+                            <button class="btn btn-sm btn-outline-secondary text-light rounded-pill px-3" id="btnHwPrevDay"><i class="bi bi-chevron-left me-1"></i> Vorheriger Tag</button>
+                            <button class="btn btn-sm btn-outline-primary text-light rounded-pill px-3" id="btnHwToday">Heute</button>
+                            <button class="btn btn-sm btn-primary-blue rounded-pill px-3 fw-bold" id="btnHwTomorrow">Morgen (12.09.2026)</button>
+                            <button class="btn btn-sm btn-outline-secondary text-light rounded-pill px-3" id="btnHwNextDay">Nächster Tag <i class="bi bi-chevron-right ms-1"></i></button>
+                        </div>
+                        <div class="col-12 col-md-auto d-flex align-items-center gap-2">
+                            <label class="form-label extra-small text-secondary fw-bold mb-0 text-nowrap"><i class="bi bi-calendar-event me-1 text-primary"></i>Datum wählen (2026/2027):</label>
+                            <input type="date" id="hwDatePicker" class="form-control form-control-sm dark-input text-light rounded-pill px-3" min="2026-09-12" max="2027-12-31" value="2026-09-12">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row g-4">
+                    <!-- Add Hausaufgabe Form -->
+                    <div class="col-12 col-lg-5">
+                        <div class="card main-login-card p-4 rounded-4 border-secondary border-opacity-25 shadow-lg">
+                            <h5 class="fw-bold text-white mb-3 d-flex align-items-center gap-2">
+                                <i class="bi bi-journal-plus text-primary"></i> Hausaufgabe eintragen
+                            </h5>
+                            <form id="formAddHomework" class="d-grid gap-3">
+                                <div>
+                                    <label class="form-label extra-small text-secondary fw-bold mb-1">FACH WÄHLEN</label>
+                                    <select id="hwSubjectSelect" class="form-select form-select-sm dark-input text-light rounded-pill px-3">
+                                        <!-- Dynamic subjects -->
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="form-label extra-small text-secondary fw-bold mb-1">AUFGABENBESCHREIBUNG</label>
+                                    <textarea id="hwDescriptionInput" class="form-control form-control-sm dark-input text-light rounded-3" rows="3" placeholder="z. B. S. 42 Nr. 3a-c lesen und im Heft lösen" required></textarea>
+                                </div>
+                                <div class="row g-2">
+                                    <div class="col-12 col-md-6">
+                                        <label class="form-label extra-small text-secondary fw-bold mb-1">FÄLLIG BIS (DATUM)</label>
+                                        <input type="date" id="hwDueDateInput" class="form-control form-control-sm dark-input text-light rounded-pill px-3" min="2026-09-12" max="2027-12-31" value="2026-09-12" required>
+                                    </div>
+                                    <div class="col-12 col-md-6">
+                                        <label class="form-label extra-small text-secondary fw-bold mb-1">KATEGORIE</label>
+                                        <select id="hwCategorySelect" class="form-select form-select-sm dark-input text-light rounded-pill px-3">
+                                            <option value="normal" selected>📝 Hausaufgabe</option>
+                                            <option value="project">🎨 Projekt / Referat</option>
+                                            <option value="reading">📖 Lesen / Vorbereitung</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn btn-primary-blue rounded-pill fw-bold py-2 mt-2 shadow-sm">
+                                    <i class="bi bi-plus-lg me-1"></i> Hausaufgabe speichern
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Hausaufgaben Liste & Filter -->
+                    <div class="col-12 col-lg-7">
+                        <div class="card main-login-card p-4 rounded-4 border-secondary border-opacity-25 shadow-lg">
+                            <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
+                                <h5 class="fw-bold text-white m-0 d-flex align-items-center gap-2">
+                                    <i class="bi bi-list-check text-primary"></i> Aufgabenübersicht
+                                </h5>
+                                <div class="btn-group btn-group-sm rounded-pill shadow-sm" role="group" id="hwFilterGroup">
+                                    <button type="button" class="btn btn-outline-secondary active text-light" data-hwfilter="all">Alle</button>
+                                    <button type="button" class="btn btn-outline-secondary text-light" data-hwfilter="pending">Offen (<span id="countHwPending">0</span>)</button>
+                                    <button type="button" class="btn btn-outline-secondary text-light" data-hwfilter="selectedDate">Am Datum</button>
+                                    <button type="button" class="btn btn-outline-secondary text-light" data-hwfilter="completed">Erledigt</button>
+                                </div>
+                            </div>
+
+                            <div id="hwTaskList" class="d-flex flex-column gap-2" style="max-height: 480px; overflow-y: auto;">
+                                <!-- Dynamic task items -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VIEW 4: KLAUSUREN- & PRÜFUNGSCOUNTDOWN -->
+            <div id="klausurenSection" class="d-none">
+                <div class="row g-4">
+                    <!-- Form to add Exam -->
+                    <div class="col-12 col-lg-4">
+                        <div class="card main-login-card p-4 rounded-4 border-secondary border-opacity-25 shadow-lg">
+                            <h5 class="fw-bold text-white mb-3 d-flex align-items-center gap-2">
+                                <i class="bi bi-alarm-fill text-danger"></i> Klausur / Arbeit eintragen
+                            </h5>
+                            <form id="formAddExam" class="d-grid gap-3">
+                                <div>
+                                    <label class="form-label extra-small text-secondary fw-bold mb-1">FACH</label>
+                                    <select id="examSubjectSelect" class="form-select form-select-sm dark-input text-light rounded-pill px-3">
+                                        <!-- Dynamic subjects -->
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="form-label extra-small text-secondary fw-bold mb-1">THEMA / TITEL</label>
+                                    <input type="text" id="examTitleInput" class="form-control form-control-sm dark-input text-light rounded-pill px-3" placeholder="z. B. 1. Klassenarbeit: Vektoren" required>
+                                </div>
+                                <div>
+                                    <label class="form-label extra-small text-secondary fw-bold mb-1">DATUM & UHRZEIT</label>
+                                    <input type="datetime-local" id="examDateTimeInput" class="form-control form-control-sm dark-input text-light rounded-pill px-3" min="2026-09-12T00:00" max="2027-12-31T23:59" required>
+                                </div>
+                                <div>
+                                    <label class="form-label extra-small text-secondary fw-bold mb-1">KLAUSURART</label>
+                                    <select id="examTypeSelect" class="form-select form-select-sm dark-input text-light rounded-pill px-3">
+                                        <option value="Klassenarbeit" selected>📝 Klassenarbeit / Schulaufgabe</option>
+                                        <option value="Test">⏱️ Test / HÜ</option>
+                                        <option value="Klausur">🎓 Oberstufenklausur</option>
+                                        <option value="Prüfung">🏆 Abschlussprüfung</option>
+                                    </select>
+                                </div>
+                                <button type="submit" class="btn btn-primary-blue rounded-pill fw-bold py-2 mt-2 shadow-sm">
+                                    <i class="bi bi-alarm me-1"></i> Countdown starten
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Countdown Cards Grid -->
+                    <div class="col-12 col-lg-8">
+                        <div class="card main-login-card p-4 rounded-4 border-secondary border-opacity-25 shadow-lg">
+                            <div class="d-flex align-items-center justify-content-between mb-3">
+                                <h5 class="fw-bold text-white m-0 d-flex align-items-center gap-2">
+                                    <i class="bi bi-clock-history text-warning"></i> Anstehende Klausuren & Countdowns
+                                </h5>
+                                <span class="badge bg-primary rounded-pill px-3 py-2" id="countUpcomingExams">0 Geplant</span>
+                            </div>
+
+                            <div class="row g-3" id="examCardsGrid">
+                                <!-- Dynamic Exam Countdown Cards -->
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

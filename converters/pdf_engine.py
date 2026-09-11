@@ -142,17 +142,77 @@ def compress_pdf(pdf_path: str, output_path: str, compression_level: str = "medi
         writer.write(f_out)
     return output_path
 
-def convert_pdf_to_pdfa(pdf_path: str, output_path: str) -> str:
-    """Convert PDF to PDF/A compliant format (adding metadata and PDF/A flags)."""
+from reportlab.pdfgen import canvas
+from reportlab.lib import colors
+
+def add_watermark_and_numbers(pdf_path: str, output_path: str, watermark_text: str = "", add_page_numbers: bool = True) -> str:
+    """Add a semi-transparent diagonal watermark text and/or 'Seite X von Y' page numbers to PDF."""
+    reader = PdfReader(pdf_path)
+    writer = PdfWriter()
+    total_pages = len(reader.pages)
+
+    for idx, page in enumerate(reader.pages):
+        packet = io.BytesIO()
+        width = float(page.mediabox.width)
+        height = float(page.mediabox.height)
+        
+        c = canvas.Canvas(packet, pagesize=(width, height))
+        
+        if watermark_text:
+            c.saveState()
+            c.setFont("Helvetica-Bold", 42)
+            c.setFillColor(colors.Color(0.5, 0.5, 0.5, alpha=0.35))
+            c.translate(width / 2.0, height / 2.0)
+            c.rotate(45)
+            c.drawCentredString(0, 0, watermark_text)
+            c.restoreState()
+            
+        if add_page_numbers:
+            c.saveState()
+            c.setFont("Helvetica", 10)
+            c.setFillColor(colors.Color(0.3, 0.3, 0.3, alpha=0.8))
+            c.drawRightString(width - 36, 20, f"Seite {idx + 1} von {total_pages}")
+            c.restoreState()
+            
+        c.save()
+        packet.seek(0)
+        
+        overlay_pdf = PdfReader(packet)
+        if len(overlay_pdf.pages) > 0:
+            page.merge_page(overlay_pdf.pages[0])
+            
+        writer.add_page(page)
+
+    with open(output_path, "wb") as f_out:
+        writer.write(f_out)
+    return output_path
+
+def protect_pdf(pdf_path: str, output_path: str, password: str) -> str:
+    """Encrypt PDF file with user password."""
+    if not password:
+        raise ValueError("Bitte gib ein Passwort zum Schützen der PDF ein.")
     reader = PdfReader(pdf_path)
     writer = PdfWriter()
     for page in reader.pages:
         writer.add_page(page)
-    writer.add_metadata({
-        "/GTS_PDFXVersion": "PDF/A-1b:2005",
-        "/Title": "Converted PDF/A",
-        "/Creator": "OmniPDF Converter Desktop App"
-    })
+    writer.encrypt(password)
     with open(output_path, "wb") as f_out:
         writer.write(f_out)
     return output_path
+
+def unlock_pdf(pdf_path: str, output_path: str, password: str) -> str:
+    """Decrypt password-protected PDF file."""
+    reader = PdfReader(pdf_path)
+    if reader.is_encrypted:
+        if not password:
+            raise ValueError("Diese PDF ist passwortgeschützt. Bitte gib das Passwort ein.")
+        decrypted = reader.decrypt(password)
+        if not decrypted:
+            raise ValueError("Falsches Passwort! Die PDF konnte nicht entsperrt werden.")
+    writer = PdfWriter()
+    for page in reader.pages:
+        writer.add_page(page)
+    with open(output_path, "wb") as f_out:
+        writer.write(f_out)
+    return output_path
+
