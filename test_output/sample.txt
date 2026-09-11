@@ -1,0 +1,2 @@
+Hello OmniPDF Converter!
+This is a sample document.

@@ -10,7 +10,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from converters import pdf_engine, doc_engine, ocr_engine
 
-app = FastAPI(title="Smart Converter", version="1.0.0")
+app = FastAPI(title="Smart Suite", version="1.0.0")
 
 # CORS middleware setup
 app.add_middleware(
@@ -179,5 +179,5 @@ app.mount("/", StaticFiles(directory=static_path, html=True), name="static")
 
 if __name__ == "__main__":
     import uvicorn
-    # Listening on 0.0.0.0 enables iPad, iPhone & local network access!
-    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
+    port = int(os.environ.get("PORT", 8000))
+    uvicorn.run("main:app", host="0.0.0.0", port=port, reload=True)

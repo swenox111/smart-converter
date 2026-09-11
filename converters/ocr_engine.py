@@ -12,9 +12,9 @@ def perform_pdf_ocr(pdf_path: str, output_path: str, lang: str = "eng") -> str:
     try:
         import pytesseract
         from PIL import Image
-        import fitz
+        import pymupdf
 
-        doc = fitz.open(pdf_path)
+        doc = pymupdf.open(pdf_path)
         for page in doc:
             pix = page.get_pixmap(dpi=150)
             img = Image.frombytes("RGB", [pix.width, pix.height], pix.samples)

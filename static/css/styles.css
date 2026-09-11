@@ -32,6 +32,24 @@ body {
     object-fit: cover;
 }
 
+/* Header & Login Overlay Z-Index Hierarchy */
+header.navbar {
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 10005 !important;
+}
+
+#loginScreen {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    z-index: 9999 !important;
+    padding-top: 60px !important;
+    backdrop-filter: blur(12px);
+}
+
 /* Sign In Card Matching Style */
 .main-login-card {
     background: var(--bg-card-dark) !important;
@@ -305,3 +323,231 @@ body.theme-light .text-white {
         font-size: 1rem;
     }
 }
+
+/* SMART DOCS (WORD STUDIO) STYLING */
+.max-w-1200 {
+    max-width: 1200px;
+}
+
+.docs-toolbar-sticky {
+    top: 75px;
+    z-index: 99;
+    backdrop-filter: blur(16px);
+}
+
+/* REAL WHITE PAPIER CANVAS (DIN A4) */
+.docs-paper-white {
+    min-height: 1056px;
+    width: 100%;
+    max-width: 816px; /* DIN A4 proportion */
+    background-color: #ffffff !important;
+    color: #0f172a !important;
+    outline: none;
+    line-height: 1.6;
+    font-size: 11pt;
+    font-family: Calibri, Arial, sans-serif;
+    word-wrap: break-word;
+    border: 1px solid #cbd5e1 !important;
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.4) !important;
+    border-radius: 4px;
+    transition: width 0.3s ease, min-height 0.3s ease, padding 0.3s ease;
+}
+
+.docs-paper-white[contenteditable="true"]:empty:before {
+    content: "Hier den Text eingeben...";
+    color: #94a3b8;
+    pointer-events: none;
+    display: block;
+    font-style: italic;
+}
+
+/* Page Formats */
+.docs-paper-white.format-a5 {
+    max-width: 580px;
+    min-height: 820px;
+}
+
+.docs-paper-white.format-letter {
+    max-width: 816px;
+    min-height: 1056px;
+}
+
+.docs-paper-white.orientation-landscape {
+    max-width: 1056px;
+    min-height: 816px;
+}
+
+/* Ribbon Tabs */
+.ribbon-tab {
+    border: none;
+    border-bottom: 2px solid transparent;
+    border-radius: 0;
+    transition: all 0.2s ease;
+}
+
+.ribbon-tab:hover {
+    color: #ffffff !important;
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.ribbon-tab.active {
+    color: var(--primary-blue, #2563eb) !important;
+    border-bottom-color: var(--primary-blue, #2563eb) !important;
+    background: rgba(37, 99, 235, 0.1);
+}
+
+/* Paper Background Patterns (Liniert & Kariert) */
+/* --- SMART PLANNER & TIMETABLE STYLES --- */
+.subject-pill {
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    user-select: none;
+}
+
+.subject-pill:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.subject-pill.active-subject {
+    outline: 2px solid #ffffff;
+    box-shadow: 0 0 14px rgba(13, 110, 253, 0.8) !important;
+}
+
+.timetable-grid td {
+    height: 38px;
+    padding: 4px 6px;
+    vertical-align: middle;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.timetable-grid td.tt-cell:hover {
+    filter: brightness(0.92);
+    box-shadow: inset 0 0 0 2px #0d6efd;
+}
+
+/* Timetable Theme Presets */
+.theme-planner-printer {
+    background: #ffffff !important;
+    color: #000000 !important;
+    border: 2px solid #000000 !important;
+}
+.theme-planner-printer th {
+    background-color: #f1f5f9 !important;
+    color: #000000 !important;
+    border: 1px solid #000000 !important;
+    font-weight: bold !important;
+}
+.theme-planner-printer td {
+    border: 1px solid #000000 !important;
+    background-color: #ffffff !important;
+    color: #000000 !important;
+}
+.theme-planner-printer td.tt-cell span {
+    color: #000000 !important;
+    font-weight: 700 !important;
+    background: transparent !important;
+}
+
+.timetable-grid td.tt-cell span {
+    display: inline-block;
+    max-width: 100%;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    hyphens: auto;
+    line-height: 1.15;
+}
+
+.theme-planner-classic {
+    background: #ffffff !important;
+    color: #0f172a !important;
+}
+
+.theme-planner-midnight {
+    background: #090d16 !important;
+    color: #f8fafc !important;
+    border: 1px solid #1e293b !important;
+}
+.theme-planner-midnight th {
+    background-color: #1e293b !important;
+    color: #38bdf8 !important;
+}
+.theme-planner-midnight td {
+    border-color: #1e293b !important;
+}
+
+.theme-planner-pastel {
+    background: #fdf2f8 !important;
+    color: #831843 !important;
+}
+.theme-planner-pastel th {
+    background-color: #f472b6 !important;
+    color: #ffffff !important;
+}
+
+.theme-planner-neon {
+    background: #022c22 !important;
+    color: #6ee7b7 !important;
+}
+.theme-planner-neon th {
+    background-color: #059669 !important;
+    color: #ffffff !important;
+}
+
+/* Print Stylesheet for Single-Page Direct Printing */
+@page {
+    size: A4 portrait;
+    margin: 5mm 8mm;
+}
+
+@media print {
+    html, body {
+        height: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        overflow: hidden !important;
+    }
+    body * {
+        visibility: hidden !important;
+    }
+    #plannerPrintCanvas, #plannerPrintCanvas *,
+    #notenPrintCanvas, #notenPrintCanvas * {
+        visibility: visible !important;
+    }
+    #plannerPrintCanvas, #notenPrintCanvas {
+        position: absolute !important;
+        left: 0 !important;
+        top: 0 !important;
+        width: 100% !important;
+        max-height: 98vh !important;
+        box-shadow: none !important;
+        border: 2px solid #000000 !important;
+        background: #ffffff !important;
+        color: #000000 !important;
+        padding: 10px 14px !important;
+        margin: 0 !important;
+        page-break-inside: avoid !important;
+        page-break-after: avoid !important;
+        display: block !important;
+    }
+    #plannerPrintCanvas th, #notenPrintCanvas th {
+        background-color: #e2e8f0 !important;
+        color: #000000 !important;
+        border: 1px solid #000000 !important;
+        padding: 3px 5px !important;
+        font-size: 0.8rem !important;
+    }
+    #plannerPrintCanvas td, #notenPrintCanvas td {
+        border: 1px solid #000000 !important;
+        height: 32px !important;
+        padding: 2px 4px !important;
+        font-size: 0.82rem !important;
+        color: #000000 !important;
+    }
+}
+
+
+

@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Smart Converter - Universal PDF Suite</title>
+    <title>Smart Suite - Universal Productivity Suite</title>
 
     <!-- Favicon & Apple Touch Icon (Websites & iOS Home Screen Bookmarks) -->
     <link rel="icon" type="image/png" sizes="32x32" href="favicon.png">
     <link rel="icon" type="image/x-icon" href="favicon.ico">
     <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
-    <meta name="apple-mobile-web-app-title" content="Smart Converter">
+    <meta name="apple-mobile-web-app-title" content="Smart Suite">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
@@ -18,16 +18,86 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
     <link rel="stylesheet" href="css/styles.css">
 </head>
-<body class="bg-dark text-light d-flex flex-column min-vh-100 theme-dark" id="appBody">
+    <!-- Header Navigation (Stays visible at top!) -->
+    <header class="navbar navbar-expand-lg navbar-dark bg-dark border-bottom border-secondary border-opacity-25 sticky-top px-3 px-md-4 shadow-sm backdrop-blur">
+        
+        <!-- App Switcher Dropdown -->
+        <div class="dropdown me-3">
+            <a class="navbar-brand d-flex align-items-center gap-2 fw-bold text-primary fs-4 dropdown-toggle no-caret cursor-pointer" href="#" id="appSwitcherDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                <span id="currentAppIcon"><div class="blue-icon-circle-sm me-1"><i class="bi bi-file-earmark-pdf-fill text-white"></i></div></span>
+                <span id="currentAppName">Smart Converter</span>
+                <i class="bi bi-chevron-down fs-6 text-secondary ms-1"></i>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-dark main-login-card shadow-lg border-secondary p-2 mt-2" aria-labelledby="appSwitcherDropdown" style="min-width: 260px;">
+                <li><span class="dropdown-header text-uppercase small text-secondary fw-bold">Select App</span></li>
+                <li>
+                    <a class="dropdown-item active rounded-3 py-2 d-flex align-items-center justify-content-between bg-primary-blue text-white cursor-pointer" href="#" id="switchAppConverter">
+                        <span class="d-flex align-items-center"><i class="bi bi-file-earmark-pdf-fill me-2 fs-5"></i>Smart Converter</span>
+                        <i class="bi bi-check-circle-fill" id="checkConverter"></i>
+                    </a>
+                </li>
+                <li>
+                    <a class="dropdown-item rounded-3 py-2 d-flex align-items-center justify-content-between text-light cursor-pointer" href="#" id="switchAppDocs">
+                        <span class="d-flex align-items-center"><i class="bi bi-file-earmark-text-fill me-2 fs-5" id="iconDocs"></i>Smart Docs</span>
+                        <i class="bi bi-check-circle-fill d-none" id="checkDocs"></i>
+                    </a>
+                </li>
+                <li>
+                    <a class="dropdown-item rounded-3 py-2 d-flex align-items-center justify-content-between text-light cursor-pointer" href="#" id="switchAppPlanner">
+                        <span class="d-flex align-items-center"><i class="bi bi-calendar3-week-fill me-2 fs-5" id="iconPlanner"></i>Smart Planner</span>
+                        <i class="bi bi-check-circle-fill d-none" id="checkPlanner"></i>
+                    </a>
+                </li>
+                <li><hr class="dropdown-divider border-secondary opacity-25"></li>
+                <li>
+                    <a class="dropdown-item disabled rounded-3 py-2 d-flex align-items-center justify-content-between opacity-50" href="#">
+                        <span class="d-flex align-items-center"><i class="bi bi-pencil-square me-2 fs-5"></i>PDF Editor Pro</span>
+                        <span class="badge bg-secondary text-dark extra-small">Coming Soon</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="dropdown-item disabled rounded-3 py-2 d-flex align-items-center justify-content-between opacity-50" href="#">
+                        <span class="d-flex align-items-center"><i class="bi bi-qr-code-scan me-2 fs-5"></i>AI Scanner</span>
+                        <span class="badge bg-secondary text-dark extra-small">Coming Soon</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="dropdown-item disabled rounded-3 py-2 d-flex align-items-center justify-content-between opacity-50" href="#">
+                        <span class="d-flex align-items-center"><i class="bi bi-cloud-arrow-up me-2 fs-5"></i>Cloud Storage</span>
+                        <span class="badge bg-secondary text-dark extra-small">Coming Soon</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
 
-    <!-- LOGIN OVERLAY SCREEN (Kompakt & Sauber) -->
-    <div id="loginScreen" class="position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center bg-black bg-opacity-90 backdrop-blur z-3 p-3">
+        <div class="ms-auto d-flex align-items-center gap-2 gap-md-3">
+            <input type="text" id="searchTools" class="form-control form-control-sm dark-input text-light search-bar rounded-pill px-3" placeholder="Search tools...">
+            
+            <!-- Admin Panel Button (Vibrant Electric Blue Pill) -->
+            <button class="btn btn-primary-blue btn-sm rounded-pill px-3 fw-bold d-none shadow-sm" id="adminPanelBtn">
+                <i class="bi bi-shield-check me-1"></i> Admin Panel
+            </button>
+
+            <!-- Gear Settings Button (Solid Electric Blue Circle Button!) -->
+            <button class="btn btn-primary-blue btn-sm rounded-circle p-2 shadow-sm d-flex align-items-center justify-content-center" id="openSettingsBtn" title="Settings" style="width: 38px; height: 38px;">
+                <i class="bi bi-gear-fill text-white fs-6 spin-hover"></i>
+            </button>
+
+            <!-- Logout Button (Sleek Red Pill) -->
+            <button class="btn btn-outline-danger btn-sm rounded-pill px-3" id="logoutBtn" title="Logout" style="display: none;">
+                <i class="bi bi-power me-1"></i> Logout
+            </button>
+        </div>
+    </header>
+
+    <!-- LOGIN OVERLAY SCREEN (Kompakt & Sauber unter der Leiste) -->
+    <div id="loginScreen" class="position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center bg-black p-3">
         <div class="card login-card-compact p-4 rounded-4 shadow-lg text-center max-w-380 w-100 position-relative overflow-hidden">
             <div class="accent-glow-bg"></div>
             
             <div class="mb-3 position-relative z-1">
-                <div class="blue-icon-circle-md mx-auto mb-3 shadow"><i class="bi bi-file-earmark-pdf-fill fs-2 text-white"></i></div>
-                <h3 class="fw-bold text-white mb-1">Smart Converter</h3>
+                <div class="blue-icon-circle-md mx-auto mb-3 shadow" id="loginAppIconContainer"><i class="bi bi-layers-fill fs-2 text-white"></i></div>
+                <h3 class="fw-bold text-white mb-1" id="loginAppTitle">Smart Suite</h3>
                 <p class="text-primary extra-small fw-semibold mb-0">Made by Antonius</p>
             </div>
 
@@ -66,66 +136,6 @@
             </div>
         </div>
     </div>
-
-    <!-- Header Navigation -->
-    <header class="navbar navbar-expand-lg navbar-dark bg-dark border-bottom border-secondary border-opacity-25 sticky-top px-3 px-md-4 shadow-sm backdrop-blur">
-        
-        <!-- App Switcher Dropdown -->
-        <div class="dropdown me-3">
-            <a class="navbar-brand d-flex align-items-center gap-2 fw-bold text-primary fs-4 dropdown-toggle no-caret cursor-pointer" href="#" id="appSwitcherDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                <div class="blue-icon-circle-sm me-1"><i class="bi bi-file-earmark-pdf-fill text-white"></i></div>
-                <span>Smart Converter</span>
-                <i class="bi bi-chevron-down fs-6 text-secondary ms-1"></i>
-            </a>
-            <ul class="dropdown-menu dropdown-menu-dark main-login-card shadow-lg border-secondary p-2 mt-2" aria-labelledby="appSwitcherDropdown" style="min-width: 260px;">
-                <li><span class="dropdown-header text-uppercase small text-secondary fw-bold">Select App</span></li>
-                <li>
-                    <a class="dropdown-item active rounded-3 py-2 d-flex align-items-center justify-content-between bg-primary-blue text-white" href="#">
-                        <span><i class="bi bi-file-earmark-pdf-fill me-2"></i>Smart Converter</span>
-                        <i class="bi bi-check-circle-fill"></i>
-                    </a>
-                </li>
-                <li><hr class="dropdown-divider border-secondary opacity-25"></li>
-                <li>
-                    <a class="dropdown-item disabled rounded-3 py-2 d-flex align-items-center justify-content-between opacity-50" href="#">
-                        <span><i class="bi bi-pencil-square me-2"></i>PDF Editor Pro</span>
-                        <span class="badge bg-secondary text-dark extra-small">Coming Soon</span>
-                    </a>
-                </li>
-                <li>
-                    <a class="dropdown-item disabled rounded-3 py-2 d-flex align-items-center justify-content-between opacity-50" href="#">
-                        <span><i class="bi bi-qr-code-scan me-2"></i>AI Scanner</span>
-                        <span class="badge bg-secondary text-dark extra-small">Coming Soon</span>
-                    </a>
-                </li>
-                <li>
-                    <a class="dropdown-item disabled rounded-3 py-2 d-flex align-items-center justify-content-between opacity-50" href="#">
-                        <span><i class="bi bi-cloud-arrow-up me-2"></i>Cloud Storage</span>
-                        <span class="badge bg-secondary text-dark extra-small">Coming Soon</span>
-                    </a>
-                </li>
-            </ul>
-        </div>
-
-        <div class="ms-auto d-flex align-items-center gap-2 gap-md-3">
-            <input type="text" id="searchTools" class="form-control form-control-sm dark-input text-light search-bar rounded-pill px-3" placeholder="Search tools...">
-            
-            <!-- Admin Panel Button (Vibrant Electric Blue Pill) -->
-            <button class="btn btn-primary-blue btn-sm rounded-pill px-3 fw-bold d-none shadow-sm" id="adminPanelBtn">
-                <i class="bi bi-shield-check me-1"></i> Admin Panel
-            </button>
-
-            <!-- Gear Settings Button (Solid Electric Blue Circle Button!) -->
-            <button class="btn btn-primary-blue btn-sm rounded-circle p-2 shadow-sm d-flex align-items-center justify-content-center" id="openSettingsBtn" title="Settings" style="width: 38px; height: 38px;">
-                <i class="bi bi-gear-fill text-white fs-6 spin-hover"></i>
-            </button>
-
-            <!-- Logout Button (Sleek Red Pill) -->
-            <button class="btn btn-outline-danger btn-sm rounded-pill px-3" id="logoutBtn" title="Logout" style="display: none;">
-                <i class="bi bi-power me-1"></i> Logout
-            </button>
-        </div>
-    </header>
 
     <!-- ADMIN PANEL MODAL -->
     <div class="modal fade" id="adminModal" tabindex="-1" aria-labelledby="adminModalLabel" aria-hidden="true">
@@ -258,10 +268,40 @@
         </div>
     </div>
 
+    <!-- LESSON TIMES EDIT MODAL -->
+    <div class="modal fade" id="timesModal" tabindex="-1" aria-labelledby="timesModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content main-login-card text-light border-secondary rounded-4 shadow-lg">
+                <div class="modal-header border-secondary border-opacity-25">
+                    <h5 class="modal-title fw-bold text-white d-flex align-items-center gap-2" id="timesModalLabel">
+                        <i class="bi bi-clock-fill text-primary"></i> Stunden-Zeiten anpassen
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <p class="small text-secondary mb-3">Passe die Uhrzeiten für die 1. bis 10. Stunde deiner Schule an:</p>
+                    <div class="row g-3" id="timesInputContainer">
+                        <!-- Dynamic 10 lesson time inputs -->
+                    </div>
+                </div>
+                <div class="modal-footer border-secondary border-opacity-25 justify-content-between">
+                    <button type="button" class="btn btn-outline-warning rounded-pill px-3" id="btnRestoreDefaultTimes">
+                        <i class="bi bi-arrow-counterclockwise me-1"></i> Standards wiederherstellen
+                    </button>
+                    <button type="button" class="btn btn-primary-blue rounded-pill px-4" data-bs-dismiss="modal" id="btnSaveTimes">
+                        Speichern
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Main Workspace Container -->
     <main class="container-fluid py-4 px-3 px-md-4 flex-grow-1">
         
-        <!-- Interactive File Converter Modal/Zone -->
+        <!-- CONVERTER APP VIEW -->
+        <div id="converterAppView">
+            <!-- Interactive File Converter Modal/Zone -->
         <div class="row mb-4 mb-md-5 justify-content-center">
             <div class="col-12 col-lg-10">
                 <div class="card main-login-card border-secondary rounded-4 shadow-lg p-3 p-md-4 text-center dropzone-card position-relative overflow-hidden" id="dropzoneCard">
@@ -677,8 +717,597 @@
                     </div>
                 </div>
             </div>
-
         </div>
+        </div>
+        <!-- END CONVERTER APP VIEW -->
+
+        <!-- SMART DOCS APP VIEW (STUDIO) -->
+        <div id="docsAppView" class="d-none max-w-1200 mx-auto">
+            
+            <!-- Top Document Action Bar -->
+            <div class="card main-login-card border-secondary rounded-4 p-2 shadow-lg mb-2">
+                <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 px-2 py-1">
+                    <!-- Document Title Input -->
+                    <div class="d-flex align-items-center gap-2 flex-grow-1" style="min-width: 240px;">
+                        <div class="blue-icon-circle-sm flex-shrink-0"><i class="bi bi-file-earmark-text-fill text-white"></i></div>
+                        <input type="text" id="docTitleInput" class="form-control dark-input text-light fw-bold fs-5 border-0 bg-transparent px-2" value="Unbenanntes Dokument" placeholder="Dokumententitel eingeben...">
+                    </div>
+
+                    <!-- Top Right Quick Actions: Vorlagen, Neu, Speichern -->
+                    <div class="d-flex align-items-center gap-2">
+                        <button class="btn btn-outline-light btn-sm rounded-pill px-3" id="btnTemplates" title="Vorlagen-Galerie">
+                            <i class="bi bi-grid-fill me-1 text-primary"></i> Mit Vorlagen erstellen
+                        </button>
+                        <button class="btn btn-outline-light btn-sm rounded-pill px-3" id="btnNewDoc" title="Leeres Dokument">
+                            <i class="bi bi-file-earmark-plus me-1 text-success"></i> Neu
+                        </button>
+                        <button class="btn btn-primary-blue btn-sm rounded-pill px-4 fw-bold shadow-sm" id="btnSaveMain">
+                            <i class="bi bi-floppy-fill me-1"></i> Speichern
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ribbon Navigation & Toolbar -->
+            <div class="card main-login-card border-secondary rounded-4 p-0 shadow-sm mb-3 sticky-top docs-toolbar-sticky overflow-hidden">
+                <!-- Ribbon Tabs Header -->
+                <div class="d-flex border-bottom border-secondary border-opacity-25 bg-black bg-opacity-40 px-3 pt-2">
+                    <button class="btn btn-sm text-light fw-bold px-3 py-2 ribbon-tab active" data-tab="tabStart">Start</button>
+                    <button class="btn btn-sm text-secondary fw-bold px-3 py-2 ribbon-tab" data-tab="tabInsert">Einfügen</button>
+                    <button class="btn btn-sm text-secondary fw-bold px-3 py-2 ribbon-tab" data-tab="tabLayout">Layout & Papier</button>
+                    <button class="btn btn-sm text-secondary fw-bold px-3 py-2 ribbon-tab" data-tab="tabExport">Exportieren</button>
+                </div>
+
+                <!-- Ribbon Contents Body -->
+                <div class="p-2 p-md-3 bg-dark bg-opacity-50">
+                    
+                    <!-- TAB 1: START -->
+                    <div class="ribbon-pane d-flex flex-wrap align-items-center gap-2" id="tabStart">
+                        <!-- Font Family & Size Group -->
+                        <div class="d-flex align-items-center gap-1">
+                            <select id="editorFontFamily" class="form-select form-select-sm dark-input text-light border-secondary rounded-2" style="width: 140px;">
+                                <option value="Calibri" selected>Calibri</option>
+                                <option value="Arial">Arial</option>
+                                <option value="Times New Roman">Times New Roman</option>
+                                <option value="Inter">Inter</option>
+                                <option value="Georgia">Georgia</option>
+                                <option value="Courier New">Courier New</option>
+                                <option value="Comic Sans MS">Comic Sans</option>
+                            </select>
+
+                            <select id="editorFontSize" class="form-select form-select-sm dark-input text-light border-secondary rounded-2" style="width: 70px;">
+                                <option value="1">10 pt</option>
+                                <option value="2">11 pt</option>
+                                <option value="3" selected>12 pt</option>
+                                <option value="4">14 pt</option>
+                                <option value="5">18 pt</option>
+                                <option value="6">24 pt</option>
+                                <option value="7">36 pt</option>
+                            </select>
+                        </div>
+
+                        <div class="vr bg-secondary opacity-50 mx-1"></div>
+
+                        <!-- Basic Formatting -->
+                        <div class="d-flex align-items-center gap-1">
+                            <button type="button" class="btn btn-sm btn-outline-secondary text-light rounded-2 px-2 editor-action-btn fw-bold" data-cmd="bold" title="Fett"><i class="bi bi-type-bold fs-6"></i></button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary text-light rounded-2 px-2 editor-action-btn fst-italic" data-cmd="italic" title="Kursiv"><i class="bi bi-type-italic fs-6"></i></button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary text-light rounded-2 px-2 editor-action-btn text-decoration-underline" data-cmd="underline" title="Unterstrichen"><i class="bi bi-type-underline fs-6"></i></button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary text-light rounded-2 px-2 editor-action-btn text-decoration-line-through" data-cmd="strikeThrough" title="Durchgestrichen"><i class="bi bi-type-strikethrough fs-6"></i></button>
+                        </div>
+
+                        <div class="vr bg-secondary opacity-50 mx-1"></div>
+
+                        <!-- Colors -->
+                        <div class="d-flex align-items-center gap-2">
+                            <div class="d-flex align-items-center gap-1" title="Textfarbe">
+                                <i class="bi bi-palette-fill text-primary small"></i>
+                                <input type="color" id="editorTextColor" class="form-control form-control-color dark-input p-0 border-0 rounded-circle cursor-pointer" value="#000000" style="width: 26px; height: 26px;">
+                            </div>
+                            <div class="d-flex align-items-center gap-1" title="Hervorhebungsfarbe">
+                                <i class="bi bi-highlighter text-warning small"></i>
+                                <input type="color" id="editorBgColor" class="form-control form-control-color dark-input p-0 border-0 rounded-circle cursor-pointer" value="#ffff00" style="width: 26px; height: 26px;">
+                            </div>
+                        </div>
+
+                        <div class="vr bg-secondary opacity-50 mx-1"></div>
+
+                        <!-- Alignment -->
+                        <div class="d-flex align-items-center gap-1">
+                            <button type="button" class="btn btn-sm btn-outline-secondary text-light rounded-2 px-2 editor-action-btn" data-cmd="justifyLeft" title="Linksbündig"><i class="bi bi-text-left fs-6"></i></button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary text-light rounded-2 px-2 editor-action-btn" data-cmd="justifyCenter" title="Zentriert"><i class="bi bi-text-center fs-6"></i></button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary text-light rounded-2 px-2 editor-action-btn" data-cmd="justifyRight" title="Rechtsbündig"><i class="bi bi-text-right fs-6"></i></button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary text-light rounded-2 px-2 editor-action-btn" data-cmd="justifyFull" title="Blocksatz"><i class="bi bi-justify fs-6"></i></button>
+                        </div>
+
+                        <div class="vr bg-secondary opacity-50 mx-1"></div>
+
+                        <!-- Lists -->
+                        <div class="d-flex align-items-center gap-1">
+                            <button type="button" class="btn btn-sm btn-outline-secondary text-light rounded-2 px-2 editor-action-btn" data-cmd="insertUnorderedList" title="Aufzählung"><i class="bi bi-list-ul fs-6"></i></button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary text-light rounded-2 px-2 editor-action-btn" data-cmd="insertOrderedList" title="Nummerierte Liste"><i class="bi bi-list-ol fs-6"></i></button>
+                        </div>
+
+                        <div class="vr bg-secondary opacity-50 mx-1"></div>
+
+                        <!-- Quick Heading -->
+                        <select id="editorHeading" class="form-select form-select-sm dark-input text-light border-secondary rounded-2" style="width: 140px;">
+                            <option value="p">Standard Text</option>
+                            <option value="h1">Überschrift 1</option>
+                            <option value="h2">Überschrift 2</option>
+                            <option value="h3">Überschrift 3</option>
+                        </select>
+
+                        <!-- Word Counter -->
+                        <div class="ms-auto extra-small text-secondary fw-semibold d-flex align-items-center gap-3 pe-2">
+                            <span>Wörter: <strong id="docWordCount" class="text-light">0</strong></span>
+                            <span>Zeichen: <strong id="docCharCount" class="text-light">0</strong></span>
+                        </div>
+                    </div>
+
+                    <!-- TAB 2: EINFÜGEN -->
+                    <div class="ribbon-pane d-none flex-wrap align-items-center gap-2" id="tabInsert">
+                        <button type="button" class="btn btn-sm btn-outline-light rounded-2 px-3" id="btnInsertTable">
+                            <i class="bi bi-table me-1 text-primary"></i> Tabelle (3x3)
+                        </button>
+                        <button type="button" class="btn btn-sm btn-outline-light rounded-2 px-3" id="btnInsertHr">
+                            <i class="bi bi-hr me-1 text-info"></i> Trennlinie
+                        </button>
+                        <button type="button" class="btn btn-sm btn-outline-light rounded-2 px-3" id="btnInsertDate">
+                            <i class="bi bi-calendar-event me-1 text-warning"></i> Datum & Uhrzeit
+                        </button>
+                    </div>
+
+                    <!-- TAB 3: LAYOUT & PAPIER -->
+                    <div class="ribbon-pane d-none flex-wrap align-items-center gap-3" id="tabLayout">
+                        <!-- Paper Pattern (Blanko / Liniert / Kariert) -->
+                        <div class="d-flex align-items-center gap-2">
+                            <label class="small text-secondary fw-bold mb-0">Papierart:</label>
+                            <select id="selectPaperPattern" class="form-select form-select-sm dark-input text-light border-secondary rounded-2" style="width: 140px;">
+                                <option value="blank" selected>⬜ Blanko</option>
+                                <option value="lined">📏 Liniert</option>
+                                <option value="grid">📐 Kariert</option>
+                            </select>
+                        </div>
+
+                        <div class="vr bg-secondary opacity-50"></div>
+
+                        <!-- Paper Size Selector -->
+                        <div class="d-flex align-items-center gap-2">
+                            <label class="small text-secondary fw-bold mb-0">Papierformat:</label>
+                            <select id="selectPaperFormat" class="form-select form-select-sm dark-input text-light border-secondary rounded-2" style="width: 160px;">
+                                <option value="a4" selected>DIN A4 (210×297 mm)</option>
+                                <option value="a5">DIN A5 (148×210 mm)</option>
+                                <option value="letter">US Letter</option>
+                            </select>
+                        </div>
+
+                        <div class="vr bg-secondary opacity-50"></div>
+
+                        <!-- Orientation Selector -->
+                        <div class="d-flex align-items-center gap-2">
+                            <label class="small text-secondary fw-bold mb-0">Ausrichtung:</label>
+                            <select id="selectPaperOrientation" class="form-select form-select-sm dark-input text-light border-secondary rounded-2" style="width: 140px;">
+                                <option value="portrait" selected>Hochformat</option>
+                                <option value="landscape">Querformat</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- TAB 4: EXPORTIEREN -->
+                    <div class="ribbon-pane d-none flex-wrap align-items-center gap-2" id="tabExport">
+                        <button type="button" class="btn btn-sm btn-danger rounded-pill px-3 fw-bold shadow-sm" id="exportPDF"><i class="bi bi-file-earmark-pdf-fill me-1"></i> Als PDF (.pdf)</button>
+                        <button type="button" class="btn btn-sm btn-primary rounded-pill px-3 fw-bold shadow-sm" id="exportDOCX"><i class="bi bi-file-earmark-word-fill me-1"></i> Als Word (.docx)</button>
+                        <button type="button" class="btn btn-sm btn-secondary rounded-pill px-3 fw-bold shadow-sm" id="exportTXT"><i class="bi bi-file-earmark-text-fill me-1"></i> Als Text (.txt)</button>
+                        <button type="button" class="btn btn-sm btn-info text-dark rounded-pill px-3 fw-bold shadow-sm" id="exportHTML"><i class="bi bi-filetype-html me-1"></i> Als HTML (.html)</button>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Real White DIN A4 Paper Canvas -->
+            <div class="docs-paper-container d-flex justify-content-center pb-5 overflow-auto">
+                <div id="editorContent" class="docs-paper-white shadow-lg p-4 p-md-5 bg-white text-dark w-100" contenteditable="true" spellcheck="true">
+                    <h2 class="fw-bold mb-3" style="color: #0f172a; font-family: Calibri, sans-serif;">Willkommen bei Smart Docs</h2>
+                    <p style="color: #334155; line-height: 1.7; font-family: Calibri, sans-serif;">Schreibe deinen Text auf weißem Papier oder wähle oben im <strong>Layout</strong>-Menü zwischen liniert, kariert oder blanko.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- MIT VORLAGEN ERSTELLEN MODAL (VORLAGEN-GALERIE GEFÜLLT WIE WORD) -->
+        <div class="modal fade" id="templateModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-xl">
+                <div class="modal-content main-login-card text-light border-secondary rounded-4 shadow-lg overflow-hidden position-relative">
+                    <div class="accent-glow-bg"></div>
+                    <div class="modal-header border-secondary border-opacity-25 pb-2">
+                        <div>
+                            <h4 class="modal-title fw-bold text-white d-flex align-items-center gap-2">
+                                <i class="bi bi-grid-fill text-primary"></i> Mit Vorlagen erstellen
+                            </h4>
+                            <p class="text-secondary extra-small mb-0">Wähle eine Vorlage aus oder starte mit einem leeren Blatt</p>
+                        </div>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    
+                    <!-- Category Filters & Search -->
+                    <div class="modal-body p-4">
+                        <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4">
+                            <div class="d-flex flex-wrap align-items-center gap-2" id="templateCategories">
+                                <button class="btn btn-sm btn-outline-primary active rounded-pill px-3 tpl-cat-btn" data-cat="all">Empfohlen</button>
+                                <button class="btn btn-sm btn-outline-secondary text-light rounded-pill px-3 tpl-cat-btn" data-cat="school">Schule & Notizen</button>
+                                <button class="btn btn-sm btn-outline-secondary text-light rounded-pill px-3 tpl-cat-btn" data-cat="resume">Lebensläufe</button>
+                                <button class="btn btn-sm btn-outline-secondary text-light rounded-pill px-3 tpl-cat-btn" data-cat="letters">Briefe & Rechnungen</button>
+                            </div>
+                            <input type="text" id="searchTemplates" class="form-control form-control-sm dark-input text-light rounded-pill px-3" placeholder="Vorlagen suchen..." style="max-width: 220px;">
+                        </div>
+
+                        <!-- Grid of Visual Templates -->
+                        <div class="row g-3 g-md-4" id="templateGrid">
+                            <!-- Template Card 1: Leeres Blatt -->
+                            <div class="col-12 col-sm-6 col-md-4 col-lg-3 tpl-item" data-cat="all school">
+                                <div class="card bg-dark border-secondary h-100 p-3 hover-card cursor-pointer text-center template-card" data-template="blank">
+                                    <div class="template-preview-box mb-3 p-3 bg-white text-dark rounded-2 shadow-sm border border-secondary" style="height: 150px; text-align: left;">
+                                        <div style="font-size: 8px; color: #94a3b8; font-style: italic;">Leeres DIN A4 Papier...</div>
+                                    </div>
+                                    <h6 class="fw-bold text-white mb-1">Leeres Dokument</h6>
+                                    <span class="extra-small text-secondary">Sauberes DIN A4 Blatt</span>
+                                </div>
+                            </div>
+
+                            <!-- Template Card 2: Liniertes Schulheft -->
+                            <div class="col-12 col-sm-6 col-md-4 col-lg-3 tpl-item" data-cat="school">
+                                <div class="card bg-dark border-secondary h-100 p-3 hover-card cursor-pointer text-center template-card" data-template="lined">
+                                    <div class="template-preview-box mb-3 p-3 bg-white text-dark rounded-2 shadow-sm border border-secondary paper-lined" style="height: 150px; text-align: left;">
+                                        <div style="font-size: 9px; color: #0f172a; font-weight: bold;">Liniertes Blatt</div>
+                                    </div>
+                                    <h6 class="fw-bold text-white mb-1">Liniertes Blatt</h6>
+                                    <span class="extra-small text-secondary">Notebook-Linien für Schule</span>
+                                </div>
+                            </div>
+
+                            <!-- Template Card 3: Kariertes Matheblatt -->
+                            <div class="col-12 col-sm-6 col-md-4 col-lg-3 tpl-item" data-cat="school">
+                                <div class="card bg-dark border-secondary h-100 p-3 hover-card cursor-pointer text-center template-card" data-template="grid">
+                                    <div class="template-preview-box mb-3 p-3 bg-white text-dark rounded-2 shadow-sm border border-secondary paper-grid" style="height: 150px; text-align: left;">
+                                        <div style="font-size: 9px; color: #0f172a; font-weight: bold;">Kariertes Papier</div>
+                                    </div>
+                                    <h6 class="fw-bold text-white mb-1">Kariertes Papier</h6>
+                                    <span class="extra-small text-secondary">Kästchen für Mathe & Physik</span>
+                                </div>
+                            </div>
+
+                            <!-- Template Card 4: Schul-Zusammenfassung -->
+                            <div class="col-12 col-sm-6 col-md-4 col-lg-3 tpl-item" data-cat="all school">
+                                <div class="card bg-dark border-secondary h-100 p-3 hover-card cursor-pointer text-center template-card" data-template="summary">
+                                    <div class="template-preview-box mb-3 p-2 bg-white text-dark rounded-2 shadow-sm border border-secondary" style="height: 150px; text-align: left; font-size: 7px;">
+                                        <div style="font-weight: bold; color: #2563eb;">Zusammenfassung</div>
+                                        <div style="color: #64748b;">Thema / Fach</div>
+                                        <hr style="margin: 3px 0;">
+                                        <div style="font-weight: bold;">1. Definitionen</div>
+                                        <div>• Begriff 1...</div>
+                                    </div>
+                                    <h6 class="fw-bold text-white mb-1">Zusammenfassung</h6>
+                                    <span class="extra-small text-secondary">Für Prüfungen & Lernen</span>
+                                </div>
+                            </div>
+
+                            <!-- Template Card 5: Referat & Aufsatz -->
+                            <div class="col-12 col-sm-6 col-md-4 col-lg-3 tpl-item" data-cat="all school">
+                                <div class="card bg-dark border-secondary h-100 p-3 hover-card cursor-pointer text-center template-card" data-template="report">
+                                    <div class="template-preview-box mb-3 p-2 bg-white text-dark rounded-2 shadow-sm border border-secondary text-center" style="height: 150px; font-size: 7px;">
+                                        <br>
+                                        <div style="font-weight: bold; font-size: 10px; color: #0f172a;">REFERAT TITEL</div>
+                                        <div style="color: #64748b;">Fach & Name</div>
+                                        <br>
+                                        <div style="text-align: left; font-weight: bold;">1. Einleitung</div>
+                                    </div>
+                                    <h6 class="fw-bold text-white mb-1">Referat & Aufsatz</h6>
+                                    <span class="extra-small text-secondary">Deckblatt & Gliederung</span>
+                                </div>
+                            </div>
+
+                            <!-- Template Card 6: Formeller Brief -->
+                            <div class="col-12 col-sm-6 col-md-4 col-lg-3 tpl-item" data-cat="letters">
+                                <div class="card bg-dark border-secondary h-100 p-3 hover-card cursor-pointer text-center template-card" data-template="letter">
+                                    <div class="template-preview-box mb-3 p-2 bg-white text-dark rounded-2 shadow-sm border border-secondary" style="height: 150px; font-size: 7px;">
+                                        <div>Absender Name</div>
+                                        <br>
+                                        <div style="font-weight: bold;">Empfänger Adresse</div>
+                                        <br>
+                                        <div style="font-weight: bold; color: #0f172a;">Betreff: Formeller Brief</div>
+                                    </div>
+                                    <h6 class="fw-bold text-white mb-1">Formeller Brief</h6>
+                                    <span class="extra-small text-secondary">DIN 5008 Briefkopf</span>
+                                </div>
+                            </div>
+
+                            <!-- Template Card 7: Lebenslauf -->
+                            <div class="col-12 col-sm-6 col-md-4 col-lg-3 tpl-item" data-cat="resume">
+                                <div class="card bg-dark border-secondary h-100 p-3 hover-card cursor-pointer text-center template-card" data-template="resume">
+                                    <div class="template-preview-box mb-3 p-2 bg-white text-dark rounded-2 shadow-sm border border-secondary" style="height: 150px; font-size: 7px;">
+                                        <div style="font-weight: bold; font-size: 9px; color: #2563eb;">LEBENSLAUF</div>
+                                        <hr style="margin: 2px 0;">
+                                        <div style="font-weight: bold;">Schulausbildung</div>
+                                        <div>2016 - Heute: Gymnasium</div>
+                                    </div>
+                                    <h6 class="fw-bold text-white mb-1">Lebenslauf</h6>
+                                    <span class="extra-small text-secondary">Moderner CV für Bewerbung</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SAVE OPTIONS MODAL -->
+        <div class="modal fade" id="saveOptionsModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content main-login-card text-light border-secondary rounded-4 shadow-lg overflow-hidden position-relative">
+                    <div class="accent-glow-bg"></div>
+                    <div class="modal-header border-secondary border-opacity-25">
+                        <h5 class="modal-title fw-bold text-white d-flex align-items-center gap-2">
+                            <i class="bi bi-floppy-fill text-primary"></i> Dokument speichern
+                        </h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body p-4 text-center">
+                        <p class="text-secondary small mb-4">Wähle aus, in welchem Format du dein Dokument auf deinem Gerät speichern möchtest:</p>
+                        
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-danger btn-lg rounded-pill fw-bold text-start px-4 d-flex align-items-center justify-content-between" id="saveAsPdf">
+                                <span><i class="bi bi-file-earmark-pdf-fill me-2"></i>Als PDF-Dokument (.pdf)</span>
+                                <i class="bi bi-arrow-right-short fs-4"></i>
+                            </button>
+
+                            <button class="btn btn-primary btn-lg rounded-pill fw-bold text-start px-4 d-flex align-items-center justify-content-between" id="saveAsWord">
+                                <span><i class="bi bi-file-earmark-word-fill me-2"></i>Als Word-Datei (.docx)</span>
+                                <i class="bi bi-arrow-right-short fs-4"></i>
+                            </button>
+
+                            <button class="btn btn-warning btn-lg rounded-pill fw-bold text-dark text-start px-4 d-flex align-items-center justify-content-between" id="saveAsText">
+                                <span><i class="bi bi-file-earmark-text-fill me-2"></i>Als Text-Datei (.txt)</span>
+                                <i class="bi bi-arrow-right-short fs-4"></i>
+                            </button>
+
+                            <button class="btn btn-info btn-lg rounded-pill fw-bold text-dark text-start px-4 d-flex align-items-center justify-content-between" id="saveAsHtml">
+                                <span><i class="bi bi-filetype-html me-2"></i>Als HTML-Datei (.html)</span>
+                                <i class="bi bi-arrow-right-short fs-4"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- END SMART DOCS APP VIEW -->
+
+        <!-- START SMART PLANNER APP VIEW (Stundenplaner & Notenrechner) -->
+        <div id="plannerAppView" class="container-fluid max-w-1200 py-4 d-none">
+            <!-- Planner Action Bar / Toolbar -->
+            <div class="card main-login-card p-3 mb-4 rounded-4 shadow-lg border-secondary border-opacity-25">
+                <div class="row g-3 align-items-center justify-content-between">
+                    <div class="col-12 col-md-auto d-flex align-items-center gap-2">
+                        <div class="btn-group rounded-pill bg-black bg-opacity-40 p-1 border border-secondary border-opacity-25" role="group">
+                            <button type="button" class="btn btn-sm btn-primary-blue rounded-pill px-3 fw-bold" id="tabStundenplan"><i class="bi bi-table me-1"></i> Stundenplan</button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary text-light rounded-pill px-3 fw-bold border-0" id="tabNotenrechner"><i class="bi bi-calculator-fill me-1"></i> Notenrechner</button>
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-md-auto d-flex align-items-center gap-2 flex-wrap ms-auto">
+                        <select id="plannerThemeSelect" class="form-select form-select-sm dark-input text-light rounded-pill px-3" style="width: 220px;">
+                            <option value="printer" selected>🖨️ Druckerfreundlich (S/W)</option>
+                            <option value="classic">🎨 Optik: Elegantes Weiß</option>
+                            <option value="midnight">🌙 Optik: Midnight Glass</option>
+                            <option value="pastel">🌸 Optik: Pastell Design</option>
+                            <option value="neon">⚡ Optik: Neon Cyan</option>
+                        </select>
+
+                        <button class="btn btn-outline-primary btn-sm rounded-pill px-3 fw-semibold shadow-sm" id="btnEditTimesModal" title="Zeiten der Stunden anpassen">
+                            <i class="bi bi-clock-fill me-1"></i> Zeiten anpassen
+                        </button>
+                        <button class="btn btn-outline-light btn-sm rounded-pill px-3 fw-semibold shadow-sm" id="btnPrintPlanner" title="Drucker öffnen">
+                            <i class="bi bi-printer-fill me-1 text-info"></i> Drucken / Kopieren
+                        </button>
+                        <button class="btn btn-primary-blue btn-sm rounded-pill px-3 fw-bold shadow-sm" id="btnSavePlannerPdf" title="Als PDF runterladen">
+                            <i class="bi bi-file-earmark-pdf-fill me-1"></i> Als PDF speichern
+                        </button>
+                        <button class="btn btn-outline-danger btn-sm rounded-circle p-2" id="btnResetPlanner" title="Stundenplan leeren" style="width: 34px; height: 34px;">
+                            <i class="bi bi-arrow-counterclockwise"></i>
+                        </button>
+
+                        <!-- NOTENRECHNER ACTION BUTTONS (Shown when Notenrechner tab is active) -->
+                        <button class="btn btn-outline-light btn-sm rounded-pill px-3 fw-semibold shadow-sm d-none" id="btnPrintNoten" title="Notenspiegel Drucken">
+                            <i class="bi bi-printer-fill me-1 text-info"></i> Drucken / Kopieren
+                        </button>
+                        <button class="btn btn-primary-blue btn-sm rounded-pill px-3 fw-bold shadow-sm d-none" id="btnSaveNotenPdf" title="Noten-PDF runterladen">
+                            <i class="bi bi-file-earmark-pdf-fill me-1"></i> Als PDF speichern
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VIEW 1: STUNDENPLANER -->
+            <div id="stundenplanSection">
+                <!-- Student Header Input Info -->
+                <div class="card main-login-card p-3 mb-4 rounded-4 border-secondary border-opacity-25">
+                    <div class="row g-3">
+                        <div class="col-12 col-md-4">
+                            <label class="form-label extra-small text-secondary fw-bold mb-1">NAME DES SCHÜLERS</label>
+                            <input type="text" id="plannerStudentName" class="form-control form-control-sm dark-input text-light" placeholder="z. B. Antonius Mustermann">
+                        </div>
+                        <div class="col-12 col-md-4">
+                            <label class="form-label extra-small text-secondary fw-bold mb-1">KLASSE / STUFE</label>
+                            <input type="text" id="plannerClass" class="form-control form-control-sm dark-input text-light" placeholder="z. B. Klasse 10b">
+                        </div>
+                        <div class="col-12 col-md-4">
+                            <label class="form-label extra-small text-secondary fw-bold mb-1">SCHULJAHR / HALBJAHR</label>
+                            <input type="text" id="plannerYear" class="form-control form-control-sm dark-input text-light" placeholder="z. B. 2026 / 2027 (1. Halbjahr)">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Subject Color Palette Manager -->
+                <div class="card main-login-card p-3 mb-4 rounded-4 border-secondary border-opacity-25">
+                    <div class="d-flex align-items-center justify-content-between mb-2">
+                        <span class="small fw-bold text-white"><i class="bi bi-palette-fill me-2 text-primary"></i>Fächer & Farben auswählen (Klicke auf ein Fach und danach in den Stundenplan):</span>
+                        <button class="btn btn-sm btn-outline-primary rounded-pill px-3" id="btnAddCustomSubject"><i class="bi bi-plus-lg me-1"></i> Neues Fach</button>
+                    </div>
+                    <div class="d-flex flex-wrap gap-2 align-items-center" id="subjectPaletteContainer">
+                        <!-- Dynamic Subject Pills -->
+                    </div>
+                </div>
+
+                <!-- Printable Timetable Sheet Canvas -->
+                <div class="card p-4 rounded-4 shadow-lg border-0 bg-white text-dark timetable-sheet theme-planner-classic" id="plannerPrintCanvas">
+                    <!-- Sheet Header -->
+                    <div class="d-flex align-items-center justify-content-between border-bottom pb-3 mb-3">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="blue-icon-circle-md shadow-sm" id="plannerHeaderIconCircle"><i class="bi bi-calendar3-week-fill fs-2 text-white"></i></div>
+                            <div>
+                                <h2 class="fw-bold m-0 text-dark" id="displayPlannerTitle">Stundenplan</h2>
+                                <p class="text-muted small m-0 fw-semibold" id="displayStudentInfo">Schüler: Antonius • Klasse 10b • Schuljahr 2026/2027</p>
+                            </div>
+                        </div>
+                        <div class="text-end">
+                            <span class="badge bg-primary text-white rounded-pill px-3 py-2 fs-6 shadow-sm" id="plannerHeaderBadge">Smart Suite</span>
+                        </div>
+                    </div>
+
+                    <!-- Timetable Grid Table -->
+                    <div class="table-responsive">
+                        <table class="table table-bordered align-middle text-center timetable-grid mb-0">
+                            <thead>
+                                <tr class="table-dark text-white">
+                                    <th style="width: 17%; min-width: 105px; white-space: nowrap;" class="py-2">Stunde / Zeit</th>
+                                    <th style="width: 16.6%;" class="py-2">Montag</th>
+                                    <th style="width: 16.6%;" class="py-2">Dienstag</th>
+                                    <th style="width: 16.6%;" class="py-2">Mittwoch</th>
+                                    <th style="width: 16.6%;" class="py-2">Donnerstag</th>
+                                    <th style="width: 16.6%;" class="py-2">Freitag</th>
+                                </tr>
+                            </thead>
+                            <tbody id="timetableGridBody">
+                                <!-- Dynamic 10 Rows -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Print Sheet Footer Branding -->
+                    <div class="d-flex align-items-center justify-content-between pt-3 mt-3 border-top text-muted extra-small">
+                        <span><i class="bi bi-shield-check me-1"></i> Erstellt mit Smart Suite • Made by Antonius</span>
+                        <span>smart-converter-sc9w.onrender.com</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VIEW 2: NOTENRECHNER -->
+            <div id="notenrechnerSection" class="d-none">
+                <div class="row g-4">
+                    <!-- Grade Entries Table -->
+                    <div class="col-12 col-lg-8">
+                        <div class="card main-login-card p-4 rounded-4 border-secondary border-opacity-25 shadow-lg">
+                            <div class="d-flex align-items-center justify-content-between mb-3">
+                                <h5 class="fw-bold text-white m-0 d-flex align-items-center gap-2">
+                                    <i class="bi bi-journal-check text-primary"></i> Noteneingabe pro Fach
+                                </h5>
+                                <button class="btn btn-primary-blue btn-sm rounded-pill px-3 fw-bold" id="btnAddGradeRow">
+                                    <i class="bi bi-plus-lg me-1"></i> Fach hinzufügen
+                                </button>
+                            </div>
+
+                            <div class="table-responsive rounded-3 border border-secondary border-opacity-25">
+                                <table class="table table-dark table-hover align-middle small mb-0">
+                                    <thead>
+                                        <tr class="text-secondary bg-black bg-opacity-40">
+                                            <th class="ps-3 py-3">Fach</th>
+                                            <th class="py-3">Schriftlich (Arbeiten)</th>
+                                            <th class="py-3">Mündlich</th>
+                                            <th class="py-3">Gewichtung</th>
+                                            <th class="py-3 text-center">Fachnote</th>
+                                            <th class="text-end pe-3 py-3">Aktion</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="gradeTableBody">
+                                        <!-- Dynamic grade rows -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Average Summary Card -->
+                    <div class="col-12 col-lg-4">
+                        <div class="card main-login-card p-4 rounded-4 border-secondary border-opacity-25 shadow-lg text-center position-relative overflow-hidden">
+                            <div class="accent-glow-bg"></div>
+                            <div class="position-relative z-1 py-3">
+                                <span class="text-secondary extra-small text-uppercase fw-bold tracking-wider">Gesamtschnitt / Zeugnisnote</span>
+                                <h1 class="display-2 fw-bold text-white my-3" id="displayOverallAverage">1.0</h1>
+                                <div id="gpaBadgeContainer">
+                                    <span class="badge bg-success fs-6 rounded-pill px-3 py-2" id="displayGpaLabel">Sehr gut</span>
+                                </div>
+                                <hr class="border-secondary opacity-25 my-4">
+                                <div class="text-start small text-secondary">
+                                    <p class="mb-1 d-flex justify-content-between"><span>Eingegebene Fächer:</span> <strong class="text-white" id="countGradedSubjects">0</strong></p>
+                                    <p class="mb-0 d-flex justify-content-between"><span>Beste Note:</span> <strong class="text-success" id="bestSubjectGrade">-</strong></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Printable Sheet for Notenrechner (Used by html2pdf and @media print) -->
+                <div class="card p-4 rounded-4 shadow-lg border-0 bg-white text-dark mt-4" id="notenPrintCanvas" style="display: none;">
+                    <div class="d-flex align-items-center justify-content-between border-bottom pb-3 mb-3">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="blue-icon-circle-md shadow-sm" style="background-color: #000; box-shadow: none;"><i class="bi bi-calculator-fill fs-2 text-white"></i></div>
+                            <div>
+                                <h2 class="fw-bold m-0 text-dark">Noten- & Zeugnisübersicht</h2>
+                                <p class="text-muted small m-0 fw-semibold" id="displayNotenStudentInfo">Schüler: Antonius • Klasse 10b • Schuljahr 2026/2027</p>
+                            </div>
+                        </div>
+                        <div class="text-end">
+                            <span class="badge bg-dark text-white rounded-pill px-3 py-2 fs-6">Smart Suite</span>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive mb-3">
+                        <table class="table table-bordered align-middle text-center mb-0">
+                            <thead>
+                                <tr class="table-dark text-white">
+                                    <th class="py-2" style="width: 25%;">Fach</th>
+                                    <th class="py-2" style="width: 25%;">Schriftliche Noten</th>
+                                    <th class="py-2" style="width: 25%;">Mündliche Noten</th>
+                                    <th class="py-2" style="width: 12%;">Gewichtung</th>
+                                    <th class="py-2" style="width: 13%;">Fachnote</th>
+                                </tr>
+                            </thead>
+                            <tbody id="notenPrintGridBody">
+                                <!-- Dynamic Noten rows -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="card bg-light border p-3 rounded-3 mb-3">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div>
+                                <h5 class="fw-bold m-0 text-dark">Gesamtschnitt / Zeugnisdurchschnitt:</h5>
+                                <p class="text-muted extra-small mb-0">Basierend auf allen bewerteten Fächern</p>
+                            </div>
+                            <div class="text-end">
+                                <span class="fs-3 fw-bold text-dark me-2" id="printOverallGpa">1.0</span>
+                                <span class="badge bg-success fs-6 rounded-pill px-3 py-2" id="printGpaLabel">Sehr gut</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex align-items-center justify-content-between pt-3 mt-2 border-top text-muted extra-small">
+                        <span><i class="bi bi-shield-check me-1"></i> Erstellt mit Smart Suite • Made by Antonius</span>
+                        <span>smart-converter-sc9w.onrender.com</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- END SMART PLANNER APP VIEW -->
     </main>
 
     <!-- Footer -->
@@ -688,6 +1317,8 @@
 
     <!-- Bootstrap 5 JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- html2pdf Bundle for 100% direct client-side PDF downloads -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <!-- App Script -->
     <script src="js/app.js"></script>
 </body>
